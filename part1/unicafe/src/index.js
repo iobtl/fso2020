@@ -22,6 +22,14 @@ const Button = (props) => {
 
 const Statistics = (props) => {
   const { text, value } = props
+  if (text === 'average') {
+    return (
+      <div>
+        <p>{text} {value} %</p>
+      </div>
+    )
+  }
+
   return (
     <div>
       <p>{text} {value}</p>
@@ -73,12 +81,14 @@ const App = () => {
       <Button onClick={handleBad} text='bad' /> 
       <Header name={'statistics'} />
       <table>
-      <tr><td><Statistics text='good' value={good} /></td></tr>
-      <tr><td><Statistics text='neutral' value={neutral} /></td></tr>
-      <tr><td><Statistics text='bad' value={bad} /></td></tr>
-      <tr><td><Statistics text='all' value={all} /></td></tr>
-      <tr><td><Statistics text='average' value={average} /></td></tr>
-      <tr><td><Statistics text='positive' value={positive} /></td></tr>
+        <tbody>
+          <tr><td><Statistics text='good' value={good} /></td></tr>
+          <tr><td><Statistics text='neutral' value={neutral} /></td></tr>
+          <tr><td><Statistics text='bad' value={bad} /></td></tr>
+          <tr><td><Statistics text='all' value={all} /></td></tr>
+          <tr><td><Statistics text='average' value={average} /></td></tr>
+          <tr><td><Statistics text='positive' value={positive} /></td></tr>
+        </tbody>
       </table>
     </div>
   )
