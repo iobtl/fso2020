@@ -1,19 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import axios from 'axios'
 
 const App = () => {
-  const originalPhonebook = [
-    { name: "Arto Hellas", number: "040-123456" },
-    { name: "Ada Lovelace", number: "39-44-5323523" },
-    { name: "Dan Abramov", number: "12-43-234345" },
-    { name: "Mary Poppendieck", number: "39-23-6423122" },
-  ];
-  const [persons, setPersons] = useState(originalPhonebook);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [newFilter, setNewFilter] = useState("");
+
+  useEffect(() => {
+    console.log('effect')
+    axios.get('http://localhost:3001/persons').then(response => {
+      console.log(response)
+      setPersons(response.data)
+    })
+  }, [])
 
   const handleNewName = (event) => {
     // Changes controlled state of the input values on each change
@@ -35,7 +38,9 @@ const App = () => {
     setPersons(filteredNames);
     // Accounting for when the filter field is blank (after inputting some value)
     if (event.target.value === "") {
-      setPersons(originalPhonebook);
+      axios.get('http://localhost:3001/persons').then(response => {
+        setPersons(response.data);
+      })
     }
   };
 
