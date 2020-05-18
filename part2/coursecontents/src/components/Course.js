@@ -1,5 +1,5 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from "react";
+import ReactDOM from "react-dom";
 
 const Header = ({ name }) => {
   return (
@@ -50,5 +50,4 @@ const Total = ({ parts }) => {
   );
 };
 
-export default Course
-
+export default Course;
