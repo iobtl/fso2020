@@ -4,12 +4,15 @@ import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import axios from "axios";
 import personService from "./services/person";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [newFilter, setNewFilter] = useState("");
+  const [message, setMessage] = useState(null);
+  const [isError, setIsError] = useState(false)
 
   useEffect(() => {
     personService.getAll().then((initialPeople) => {
@@ -34,7 +37,7 @@ const App = () => {
     console.log(event.target.value);
     setNewFilter(event.target.value);
     const filteredNames = persons.filter((person) =>
-      person.name.toLowerCase().includes(event.target.value)
+      person.name.toLowerCase().includes(event.target.value.toLowerCase())
     );
     setPersons(filteredNames);
     // Accounting for when the filter field is blank (after inputting some value)
@@ -68,9 +71,24 @@ const App = () => {
                 person.name !== personToChange.name ? person : returnedPerson
               )
             );
+          })
+          .catch((error) => {
+            setMessage(
+              `Information of ${newName} has already been removed from server`
+            );
+            setIsError(true)
+            setTimeout(() => {
+              setMessage(null);
+              setIsError(false)
+            }, 5000);
           });
+
+        setMessage(`Changed number of ${changedPerson.name}`);
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
       }
-    // Case 2: Person does not exist in database/records
+      // Case 2: Person does not exist in database/records
     } else {
       const newPerson = { name: newName, number: newNumber };
       personService.create(newPerson).then((returnedPerson) => {
@@ -78,6 +96,10 @@ const App = () => {
         // Without this line, the front-end state will not be updated with this POST request
         setPersons(persons.concat(returnedPerson));
       });
+      setMessage(`Added ${newPerson.name}`);
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
     }
     // Resetting input boxes
     setNewName("");
@@ -93,12 +115,18 @@ const App = () => {
       setPersons(newPersons);
       personService.remove(id);
       console.log("person removed from database");
+
+      setMessage(`Removed ${personToRemove.name} from database`);
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
     }
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} isError={isError} />
       <Filter filter={newFilter} handleNewFilter={handleNewFilter} />
       <h3>add a new</h3>
       <PersonForm
@@ -109,7 +137,7 @@ const App = () => {
         handleNewPerson={handleNewPerson}
       />
       <h3>Numbers</h3>
-      <Persons persons={persons} remove={removePerson} />
+      <Persons persons={persons} removePerson={removePerson} />
     </div>
   );
 };
