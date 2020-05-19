@@ -17,17 +17,19 @@ const App = () => {
     });
   }, []);
 
+  // Event handler for changes in input values for 'name'
   const handleNewName = (event) => {
-    // Changes controlled state of the input values on each change
     console.log(event.target.value);
     setNewName(event.target.value);
   };
 
+  // Event handler for changes in input values for 'number'
   const handleNewNumber = (event) => {
     console.log(event.target.value);
     setNewNumber(event.target.value);
   };
 
+  // Event handler for changes in input values for 'filter'
   const handleNewFilter = (event) => {
     console.log(event.target.value);
     setNewFilter(event.target.value);
@@ -43,9 +45,11 @@ const App = () => {
     }
   };
 
+  // Event handler for adding a person to the existing database/numbers record
   const handleNewPerson = (event) => {
     event.preventDefault();
     const names = persons.map((person) => person.name);
+    // Case 1: Person already exists in database/records
     if (names.includes(newName) === true) {
       const confirmation = window.confirm(
         `${newName} is already added to phonebook, replace the old number with a new one?`
@@ -66,6 +70,7 @@ const App = () => {
             );
           });
       }
+    // Case 2: Person does not exist in database/records
     } else {
       const newPerson = { name: newName, number: newNumber };
       personService.create(newPerson).then((returnedPerson) => {
@@ -74,10 +79,12 @@ const App = () => {
         setPersons(persons.concat(returnedPerson));
       });
     }
+    // Resetting input boxes
     setNewName("");
     setNewNumber("");
   };
 
+  // Deleting person entry from database and records
   const removePerson = (id) => {
     const personToRemove = persons.find((person) => person.id === id);
     const confirmation = window.confirm(`Delete ${personToRemove.name} ?`);
