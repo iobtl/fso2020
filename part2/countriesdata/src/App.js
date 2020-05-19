@@ -21,7 +21,27 @@ const Flag = ({ flag }) => {
   );
 };
 
-const Results = ({ results }) => {
+const ShowButton = ({ handleShow }) => {
+
+  return (
+      <button onClick={handleShow}>show</button>
+  )
+}
+
+const View = ({ result }) => {
+  return (
+    <div>
+      <h2>{result.name}</h2>
+      <p>{result.capital}</p>
+      <p>{result.population}</p>
+      <h3>languages</h3>
+      <Languages languages={result.languages} />
+      <Flag flag={result.flag} />
+    </div>
+  )
+}
+
+const Results = ({ results, handleShow }) => {
   // Conditional rendering
   // 1. No search entry
   if (results.length === 250) {
@@ -41,19 +61,16 @@ const Results = ({ results }) => {
       const result = results[0];
       return (
         <div>
-          <h2>{result.name}</h2>
-          <p key={result.id}>capital {result.capital}</p>
-          <p key={result.id}>population {result.population}</p>
-          <h2>languages</h2>
-          <Languages languages={result.languages} />
-          <Flag flag={result.flag} />
+          <View result={result} />
         </div>
       );
     } else {
       return (
         <div>
           {results.map((result) => (
-            <p key={result.id}>{result.name}</p>
+            <p key={result.id}>
+              {result.name} <ShowButton handleShow={handleShow} />
+            </p>
           ))}
         </div>
       );
@@ -94,10 +111,13 @@ const App = () => {
     setResults(filteredCountries);
   };
 
+  const handleShow = (event) => {
+  }
+
   return (
     <div>
       <CountryForm country={country} handleNewCountry={handleNewCountry} />
-      <Results results={results} />
+      <Results results={results} handleShow={handleShow} />
     </div>
   );
 };

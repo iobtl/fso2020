@@ -3,6 +3,7 @@ import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import axios from 'axios'
+import personService from './services/person'
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,10 +12,8 @@ const App = () => {
   const [newFilter, setNewFilter] = useState("");
 
   useEffect(() => {
-    console.log('effect')
-    axios.get('http://localhost:3001/persons').then(response => {
-      console.log(response)
-      setPersons(response.data)
+    personService.getAll().then(initialPeople => {
+      setPersons(initialPeople)
     })
   }, [])
 
@@ -38,8 +37,8 @@ const App = () => {
     setPersons(filteredNames);
     // Accounting for when the filter field is blank (after inputting some value)
     if (event.target.value === "") {
-      axios.get('http://localhost:3001/persons').then(response => {
-        setPersons(response.data);
+      personService.getAll().then(allPeople => {
+        setPersons(allPeople)
       })
     }
   };
@@ -51,11 +50,23 @@ const App = () => {
       window.alert(`${newName} is already added to phonebook`);
     } else {
       const newPerson = { name: newName, number: newNumber };
-      setPersons(persons.concat(newPerson));
+        personService.create(newPerson).then(returnedPerson => {
+          // Updating state in App component 
+          // Without this line, the front-end state will not be updated with this POST request
+          setPersons(persons.concat(returnedPerson));
+        })
+      }
       setNewName("");
       setNewNumber("");
     }
-  };
+
+    const removePerson = (id) => {
+      const personToRemove = persons.find(person => person.id === id)
+      const newPersons = persons.filter(person => person.id !== id)
+      setPersons(newPersons)
+      personService.remove(id)
+      console.log('person removed from database')
+    }
 
   return (
     <div>
@@ -70,7 +81,7 @@ const App = () => {
         handleNewPerson={handleNewPerson}
       />
       <h3>Numbers</h3>
-      <Persons persons={persons} />
+      <Persons persons={persons} remove={removePerson}/>
     </div>
   );
 };
