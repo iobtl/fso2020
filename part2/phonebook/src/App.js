@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import axios from 'axios'
-import personService from './services/person'
+import axios from "axios";
+import personService from "./services/person";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -12,10 +12,10 @@ const App = () => {
   const [newFilter, setNewFilter] = useState("");
 
   useEffect(() => {
-    personService.getAll().then(initialPeople => {
-      setPersons(initialPeople)
-    })
-  }, [])
+    personService.getAll().then((initialPeople) => {
+      setPersons(initialPeople);
+    });
+  }, []);
 
   const handleNewName = (event) => {
     // Changes controlled state of the input values on each change
@@ -37,9 +37,9 @@ const App = () => {
     setPersons(filteredNames);
     // Accounting for when the filter field is blank (after inputting some value)
     if (event.target.value === "") {
-      personService.getAll().then(allPeople => {
-        setPersons(allPeople)
-      })
+      personService.getAll().then((allPeople) => {
+        setPersons(allPeople);
+      });
     }
   };
 
@@ -47,26 +47,47 @@ const App = () => {
     event.preventDefault();
     const names = persons.map((person) => person.name);
     if (names.includes(newName) === true) {
-      window.alert(`${newName} is already added to phonebook`);
+      const confirmation = window.confirm(
+        `${newName} is already added to phonebook, replace the old number with a new one?`
+      );
+      if (confirmation === true) {
+        const personToChange = persons.find(
+          (person) => person.name === newName
+        );
+        const changedPerson = { ...personToChange, number: newNumber };
+        // Need to update both the database and the current state
+        personService
+          .update(changedPerson.id, changedPerson)
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.name !== personToChange.name ? person : returnedPerson
+              )
+            );
+          });
+      }
     } else {
       const newPerson = { name: newName, number: newNumber };
-        personService.create(newPerson).then(returnedPerson => {
-          // Updating state in App component 
-          // Without this line, the front-end state will not be updated with this POST request
-          setPersons(persons.concat(returnedPerson));
-        })
-      }
-      setNewName("");
-      setNewNumber("");
+      personService.create(newPerson).then((returnedPerson) => {
+        // Updating state in App component
+        // Without this line, the front-end state will not be updated with this POST request
+        setPersons(persons.concat(returnedPerson));
+      });
     }
+    setNewName("");
+    setNewNumber("");
+  };
 
-    const removePerson = (id) => {
-      const personToRemove = persons.find(person => person.id === id)
-      const newPersons = persons.filter(person => person.id !== id)
-      setPersons(newPersons)
-      personService.remove(id)
-      console.log('person removed from database')
+  const removePerson = (id) => {
+    const personToRemove = persons.find((person) => person.id === id);
+    const confirmation = window.confirm(`Delete ${personToRemove.name} ?`);
+    if (confirmation === true) {
+      const newPersons = persons.filter((person) => person.id !== id);
+      setPersons(newPersons);
+      personService.remove(id);
+      console.log("person removed from database");
     }
+  };
 
   return (
     <div>
@@ -81,7 +102,7 @@ const App = () => {
         handleNewPerson={handleNewPerson}
       />
       <h3>Numbers</h3>
-      <Persons persons={persons} remove={removePerson}/>
+      <Persons persons={persons} remove={removePerson} />
     </div>
   );
 };
