@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 const PersonForm = (props) => {
   return (
@@ -17,4 +17,4 @@ const PersonForm = (props) => {
   );
 };
 
-export default PersonForm
+export default PersonForm;
