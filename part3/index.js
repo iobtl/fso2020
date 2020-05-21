@@ -1,7 +1,11 @@
 const express = require("express");
+const morgan = require("morgan");
+const cors = require("cors");
 const app = express();
 
 app.use(express.json());
+app.use(cors());
+app.use(express.static('build'))
 
 let persons = [
   {
@@ -26,6 +30,21 @@ let persons = [
   },
 ];
 
+morgan.token("content", (req, res) => {
+  // req.body is of object type -> will log [object Object]
+  console.log(typeof req.body);
+  const content = JSON.stringify(req.body);
+  // after conversion, content is of string type
+  console.log(typeof content);
+  return content;
+});
+
+app.use(
+  morgan(
+    ":method :url :status :res[content-length] - :response-time ms :content"
+  )
+);
+
 app.get("/", (request, response) => {
   response.send("Hello World");
 });
@@ -42,7 +61,7 @@ app.get("/info", (request, response) => {
 
 app.get("/api/persons/:id", (request, response) => {
   const id = Number(request.params.id);
-  const person = persons.find((p) => p.id === id);
+  const person = persons.find((person) => person.id === id);
 
   if (person) {
     response.json(person);
@@ -51,7 +70,29 @@ app.get("/api/persons/:id", (request, response) => {
   }
 });
 
-const PORT = 3001;
+app.delete("/api/persons/:id", (request, response) => {
+  const id = Number(request.params.id);
+  persons = persons.filter((person) => person.id !== id);
+
+  response.json(persons);
+});
+
+app.post("/api/persons", (request, response) => {
+  const id = Math.floor(Math.random() * 100);
+  const body = request.body;
+  if (!body.name || !body.number) {
+    response.status(400).send("Error: Missing parameter in content").end();
+  } else if (
+    persons.map((person) => person.name).includes(body.name) === true
+  ) {
+    response.status(400).send("Error: Name must be unique").end();
+  }
+  const person = { name: body.name, number: body.number, id: id };
+
+  response.json(person);
+});
+
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
