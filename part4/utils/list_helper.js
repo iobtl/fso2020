@@ -1,4 +1,3 @@
-var _ = require('lodash/core');
 const dummy = (blogs) => {
   return 1;
 };
@@ -18,16 +17,17 @@ const favoriteBlog = (blogs) => {
 };
 
 const mostBlogs = (blogs) => {
-  const authors = blogs.map((blog) => blog.author);
   const authorCounts = {};
-  for (var i = 0; i < authors.length; i++) {
-    authorCounts[authors[i]] = 1 + (authorCounts[authors[i]] || 0);
+  for (var i = 0; i < blogs.length; i++) {
+    authorCounts[blogs[i].author] = 1 + (authorCounts[blogs[i].author] || 0);
   }
+  console.log(authorCounts);
+
   const authorBlogs = Object.entries(authorCounts).map(
-    (authorBlog) =>
+    (authorCount) =>
       new Object({
-        author: authorBlog[0],
-        blogs: authorBlog[1],
+        author: authorCount[0],
+        blogs: authorCount[1],
       })
   );
 
@@ -37,20 +37,14 @@ const mostBlogs = (blogs) => {
 };
 
 const mostLikes = (blogs) => {
-  const authorLikes = blogs.map(
-    (blog) =>
-      new Object({
-        author: blog.author,
-        likes: blog.likes,
-      })
-  );
   const authorCounts = {};
-  for (var i = 0; i < authorLikes.length; i++) {
-    authorCounts[authorLikes[i].author] =
-      authorLikes[i].likes + (authorCounts[authorLikes[i].author] || 0);
+  for (var i = 0; i < blogs.length; i++) {
+    authorCounts[blogs[i].author] =
+      blogs[i].likes + (authorCounts[blogs[i].author] || 0);
   }
+  console.log(authorCounts);
 
-  const objectAuthorLikes = Object.entries(authorCounts).map(
+  const authorLikes = Object.entries(authorCounts).map(
     (authorCount) =>
       new Object({
         author: authorCount[0],
@@ -58,11 +52,11 @@ const mostLikes = (blogs) => {
       })
   );
 
-  const highestReducer = (item, sum) => (item.likes > sum.likes ? item : sum);
+  console.log(authorLikes);
 
-  return objectAuthorLikes.length === 0
-    ? {}
-    : objectAuthorLikes.reduce(highestReducer, 0);
+  const highestreducer = (item, sum) => (item.likes > sum.likes ? item : sum);
+
+  return authorLikes.length === 0 ? {} : authorLikes.reduce(highestreducer, 0);
 };
 
 module.exports = {
