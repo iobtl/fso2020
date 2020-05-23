@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --verbose",
     "dev": "nodemon index.js"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "jest": "^26.0.1",
+    "lodash": "^4.17.15",
     "nodemon": "^2.0.4"
   },
   "dependencies": {
@@ -19,6 +21,9 @@
     "http": "0.0.1-security",
     "mongodb": "^3.5.7",
     "mongoose": "^5.9.15"
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "proxy": "http://localhost:3003"
 }

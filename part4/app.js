@@ -22,6 +22,7 @@ app.use(cors());
 app.use(express.json());
 app.use(middleware.requestLogger);
 
+// Mounting the blogsRouter object on /api/blogs
 app.use('/api/blogs', blogsRouter);
 
 app.use(middleware.unknownEndpoint);
