@@ -70,8 +70,21 @@ describe('on the blog page', async () => {
       userId: currentUsers[0].id,
     };
 
+    const user = {
+      username: 'root',
+      name: 'bear',
+      password: 'bnaiowdaw',
+    };
+
+    const returnedUser = await api
+      .post('/api/login')
+      .send(user)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${returnedUser.body.token}`)
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -96,13 +109,26 @@ describe('on the blog page', async () => {
     expect(blogJSON[0].likes).toBe(0);
   });
 
-  test('invalid blog cannot be created', async () => {
+  test('blog with missing fields cannot be created, even when web token provided', async () => {
     const newBlog = {
       author: 'Bear',
     };
 
+    const user = {
+      username: 'root',
+      name: 'bear',
+      password: 'bnaiowdaw',
+    };
+
+    const returnedUser = await api
+      .post('/api/login')
+      .send(user)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${returnedUser.body.token}`)
       .send(newBlog)
       .expect(400)
       .expect('Content-Type', /application\/json/);
@@ -206,8 +232,21 @@ describe('on the user page', async () => {
       userId: initialUser[0].id,
     };
 
+    const user = {
+      username: 'root',
+      name: 'bear',
+      password: 'bnaiowdaw',
+    };
+
+    const returnedUser = await api
+      .post('/api/login')
+      .send(user)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${returnedUser.body.token}`)
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -222,6 +261,36 @@ describe('on the user page', async () => {
     );
     const blog = currentUsers.body[0].blogs[0];
     expect(blog.title).toEqual('How to build a bear');
+  });
+
+  test('able to obtain json web token when logging in', async () => {
+    const user = {
+      username: 'root',
+      name: 'bear',
+      password: 'bnaiowdaw',
+    };
+
+    const returnedUser = await api
+      .post('/api/login')
+      .send(user)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(returnedUser.body.token).toBeDefined();
+  });
+
+  test('unable to post blog if no authorization header provided', async () => {
+    const initialUser = await blog_helper.usersInDb();
+
+    const newBlog = {
+      title: 'How to build a bear',
+      url: 'http://buildingbear.com',
+      author: 'Bear',
+      likes: 100,
+      userId: initialUser[0].id,
+    };
+
+    await api.post('/api/blogs').send(newBlog).expect(401);
   });
 });
 
