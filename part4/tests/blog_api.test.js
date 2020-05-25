@@ -131,7 +131,6 @@ describe('on the blog page', async () => {
       .set('Authorization', `Bearer ${returnedUser.body.token}`)
       .send(newBlog)
       .expect(400)
-      .expect('Content-Type', /application\/json/);
   });
 
   test('a blog can be deleted', async () => {

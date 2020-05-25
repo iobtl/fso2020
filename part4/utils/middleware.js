@@ -30,7 +30,7 @@ const tokenExtractor = (request, response, next) => {
   const authorization = request.get('authorization');
   if (authorization && authorization.toLowerCase().startsWith('bearer')) {
     // Setting authorization header in HTTP request headers
-    response.set('Authorization', authorization).end();
+    request.token = authorization.substring(7);
   }
 
   next();
