@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title": "How to build a bear",
+    "title": "How to be normal",
     "author": "Bear",
     "url": "www.bear.com",
-    "user": "5ecb119a74588a765ff9812d"
+    "userId": "5ecb1a41d03095265a4762bb"
 }
