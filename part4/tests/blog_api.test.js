@@ -154,6 +154,30 @@ describe('on the user page', async () => {
     const allUsernames = allUsers.map((user) => user.username);
     expect(allUsernames).toContain(newUser.username);
   });
+
+  test('user is not added when minimum password or username length is not met', async () => {
+    const initialUsers = await blog_helper.usersInDb();
+
+    const wrongUser = {
+      username: 'he',
+      name: 'hehe',
+      password: 'hiya',
+    };
+
+    const wrongPassword = {
+      username: 'hedawd',
+      name: 'hehe',
+      password: 'hi',
+    };
+
+    await api.post('/api/users').send(wrongUser).expect(400);
+    await api.post('/api/users').send(wrongPassword).expect(400);
+
+    const currentUsers = await blog_helper.usersInDb();
+    expect(currentUsers).toHaveLength(initialUsers.length);
+    const currentUsernames = currentUsers.map((user) => user.username);
+    expect(currentUsernames).not.toContain(wrongUser.username);
+  });
 });
 
 afterAll(() => {

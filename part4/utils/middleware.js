@@ -18,7 +18,7 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' });
   } else if (error.name === 'ValidationError') {
-    return response.status(400).send({ error: 'missing parameters', status: 400 });
+    return response.status(400).send({ error: 'missing parameters' });
   }
 
   next(error);
