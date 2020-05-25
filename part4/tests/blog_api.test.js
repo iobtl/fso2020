@@ -4,10 +4,12 @@ require('express-async-errors');
 const app = require('../app');
 const api = supertest(app);
 const Blog = require('../models/Blog');
+const User = require('../models/User');
 const blog_helper = require('../utils/blog_helper');
 
 beforeEach(async () => {
   await Blog.deleteMany({});
+  await User.deleteMany({});
 
   for (let blog of blog_helper.initialBlogs) {
     let newBlog = new Blog(blog);
@@ -131,17 +133,26 @@ describe('on the user page', async () => {
   });
 
   test('a new user can be created', async () => {
-    const newUser = new User({
-      username: 'Hehe',
+    const initialUsers = await blog_helper.usersInDb();
+
+    const newUser = {
+      username: 'Hellothere',
       name: 'hehe',
       password: 'daoiwdnawod',
-    });
+    };
 
     const returnedUser = await api
       .post('/api/users')
       .send(newUser)
       .expect(200)
       .expect('Content-Type', /application\/json/);
+
+    const allUsers = await blog_helper.usersInDb();
+    console.log(allUsers);
+    expect(allUsers).toHaveLength(initialUsers.length + 1);
+
+    const allUsernames = allUsers.map((user) => user.username);
+    expect(allUsernames).toContain(newUser.username);
   });
 });
 

@@ -5,7 +5,8 @@ const mongoose = require('mongoose');
 const config = require('./utils/config');
 const middleware = require('./utils/middleware');
 const logger = require('./utils/logger');
-const blogsRouter = require('./controllers/blogs')
+const blogsRouter = require('./controllers/blogs');
+const usersRouter = require('./controllers/users');
 
 const mongoURL = config.MONGODB_URL;
 logger.info('connecting to', mongoURL);
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use(middleware.requestLogger);
 
 // Mounting the blogsRouter object on /api/blogs
+app.use('/api/users', usersRouter);
 app.use('/api/blogs', blogsRouter);
 
 app.use(middleware.unknownEndpoint);
