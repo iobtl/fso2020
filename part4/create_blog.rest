@@ -2,7 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title": "How to create a website",
+    "title": "How to build a bear",
     "author": "Bear",
-    "url": "www.bear.com"
+    "url": "www.bear.com",
+    "user": "5ecb119a74588a765ff9812d"
 }

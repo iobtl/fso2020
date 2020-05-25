@@ -6,6 +6,7 @@ const api = supertest(app);
 const Blog = require('../models/Blog');
 const User = require('../models/User');
 const blog_helper = require('../utils/blog_helper');
+const bcrypt = require('bcrypt');
 
 beforeEach(async () => {
   await Blog.deleteMany({});
@@ -15,6 +16,18 @@ beforeEach(async () => {
     let newBlog = new Blog(blog);
     await newBlog.save();
   }
+
+  const randomPassword = 'bnaiowdaw';
+
+  const hashedPassword = await bcrypt.hash(randomPassword, 10);
+
+  const newUser = new User({
+    username: 'root',
+    name: 'bear',
+    passwordHash: hashedPassword,
+  });
+
+  await newUser.save();
 });
 
 describe('on the blog page', async () => {
@@ -47,12 +60,15 @@ describe('on the blog page', async () => {
   });
 
   test('a valid blog can be added', async () => {
-    const newBlog = new Blog({
+    // picking a random userid from the database
+    const currentUsers = await blog_helper.usersInDb();
+    const newBlog = {
       title: 'Async/Await',
       author: 'Bear',
       url: 'http://asyncawaitatbear.com',
       likes: 0,
-    });
+      userId: currentUsers[0].id,
+    };
 
     await api
       .post('/api/blogs')
@@ -81,9 +97,9 @@ describe('on the blog page', async () => {
   });
 
   test('invalid blog cannot be created', async () => {
-    const newBlog = new Blog({
+    const newBlog = {
       author: 'Bear',
-    });
+    };
 
     await api
       .post('/api/blogs')

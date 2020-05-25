@@ -55,8 +55,6 @@ const initialBlogs = [
   },
 ];
 
-const initialUsers = [];
-
 const blogsInDb = async () => {
   const blogs = await Blog.find({});
 
@@ -71,7 +69,6 @@ const usersInDb = async () => {
 
 module.exports = {
   initialBlogs,
-  initialUsers,
   blogsInDb,
   usersInDb,
 };
