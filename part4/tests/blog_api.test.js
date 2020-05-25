@@ -194,6 +194,35 @@ describe('on the user page', async () => {
     const currentUsernames = currentUsers.map((user) => user.username);
     expect(currentUsernames).not.toContain(wrongUser.username);
   });
+
+  test('adding a blog registered to a userid displays the blogs on the users page as well', async () => {
+    const initialUser = await blog_helper.usersInDb();
+
+    const newBlog = {
+      title: 'How to build a bear',
+      url: 'http://buildingbear.com',
+      author: 'Bear',
+      likes: 100,
+      userId: initialUser[0].id,
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const currentUsers = await api
+      .get('/api/users')
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(currentUsers.body[0].blogs).toHaveLength(
+      initialUser[0].blogs.length + 1
+    );
+    const blog = currentUsers.body[0].blogs[0];
+    expect(blog.title).toEqual('How to build a bear');
+  });
 });
 
 afterAll(() => {
