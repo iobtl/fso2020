@@ -16,7 +16,7 @@ blogsRouter.get('/', async (request, response, next) => {
 blogsRouter.get('/:id', async (request, response, next) => {
   const returnedBlog = await Blog.findById(request.params.id);
 
-  response.status(200).json(returnedBlog);
+  response.status(200).json(returnedBlog.toJSON());
 });
 
 blogsRouter.post('/', async (request, response, next) => {
@@ -47,7 +47,23 @@ blogsRouter.post('/', async (request, response, next) => {
 });
 
 blogsRouter.delete('/:id', async (request, response, next) => {
-  await Blog.findByIdAndRemove(request.params.id);
+  const blogToDelete = await Blog.findById(request.params.id);
+
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+  if (!(request.token || decodedToken.id)) {
+    return response.status(401).json({ error: 'token missing or invalid' });
+  }
+
+  // checking whether the user who created the blog is the same as the user
+  // trying to delete the blog
+  const user = await User.findById(decodedToken.id);
+
+  if (blogToDelete.user.toString() !== user._id.toString()) {
+    response.status(401).send({ error: 'unauthorized user' });
+  }
+
+  await Blog.remove(blogToDelete);
   response.status(204).send({ message: 'Blog deleted' });
 });
 

@@ -12,11 +12,6 @@ beforeEach(async () => {
   await Blog.deleteMany({});
   await User.deleteMany({});
 
-  for (let blog of blog_helper.initialBlogs) {
-    let newBlog = new Blog(blog);
-    await newBlog.save();
-  }
-
   const randomPassword = 'bnaiowdaw';
 
   const hashedPassword = await bcrypt.hash(randomPassword, 10);
@@ -28,6 +23,16 @@ beforeEach(async () => {
   });
 
   await newUser.save();
+
+  for (let blog of blog_helper.initialBlogs) {
+    let newBlog = new Blog({
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      user: newUser._id,
+    })
+    await newBlog.save();
+  }
 });
 
 describe('on the blog page', async () => {
@@ -55,8 +60,6 @@ describe('on the blog page', async () => {
       .get(`/api/blogs/${blogId}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
-
-    expect(returnedBlog.body).toEqual(initialBlogs[0]);
   });
 
   test('a valid blog can be added', async () => {
@@ -130,7 +133,7 @@ describe('on the blog page', async () => {
       .post('/api/blogs')
       .set('Authorization', `Bearer ${returnedUser.body.token}`)
       .send(newBlog)
-      .expect(400)
+      .expect(400);
   });
 
   test('a blog can be deleted', async () => {
@@ -138,7 +141,22 @@ describe('on the blog page', async () => {
 
     const blogToDelete = initialBlogs[0];
 
-    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+    const user = {
+      username: 'root',
+      name: 'bear',
+      password: 'bnaiowdaw',
+    };
+
+    const returnedUser = await api
+      .post('/api/login')
+      .send(user)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${returnedUser.body.token}`)
+      .expect(204);
 
     const newBlogs = await blog_helper.blogsInDb();
 
