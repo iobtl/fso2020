@@ -57,6 +57,7 @@ blogsRouter.delete('/:id', async (request, response, next) => {
 
   // checking whether the user who created the blog is the same as the user
   // trying to delete the blog
+  // originally, the token was signed using the username and userid
   const user = await User.findById(decodedToken.id);
 
   if (blogToDelete.user.toString() !== user._id.toString()) {
