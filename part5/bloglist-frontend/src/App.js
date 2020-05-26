@@ -3,6 +3,9 @@ import Blog from './components/Blog';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import Notification from './components/Notification';
+import Login from './components/Login';
+import Logout from './components/Logout';
+import CreateBlog from './components/CreateBlog';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -84,85 +87,28 @@ const App = () => {
     });
   };
 
-  if (user === null) {
-    return (
-      <div>
-        <h2>log in to application</h2>
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input
-              value={username}
-              text='username'
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input
-              value={password}
-              text='password'
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button type='submit'>login</button>
-        </form>
-      </div>
-    );
-  }
-
   return (
     <div>
       <div>
         <h2>blogs</h2>
         <Notification message={message} isError={isError} />
-        <p>
-          {user.name} logged in
-          <button onClick={handleLogout}>logout</button>
-        </p>
+        {user === null ? (
+          <Login
+            username={username}
+            setUsername={setUsername}
+            password={password}
+            setPassword={setPassword}
+            handleLogin={handleLogin}
+          />
+        ) : (
+          <Logout name={user.name} logout={handleLogout} />
+        )}
         <h2>create new</h2>
-        <form onSubmit={createNewBlog}>
-          <div>
-            title:
-            <input
-              value={newBlog.title}
-              text='blogTitle'
-              onChange={({ target }) =>
-                setNewBlog({
-                  ...newBlog,
-                  title: target.value,
-                })
-              }
-            />
-          </div>
-          <div>
-            author:
-            <input
-              value={newBlog.author}
-              text='blogAuthor'
-              onChange={({ target }) =>
-                setNewBlog({
-                  ...newBlog,
-                  author: target.value,
-                })
-              }
-            />
-          </div>
-          <div>
-            url:
-            <input
-              value={newBlog.url}
-              text='blogUrl'
-              onChange={({ target }) =>
-                setNewBlog({
-                  ...newBlog,
-                  url: target.value,
-                })
-              }
-            />
-          </div>
-          <button type='submit'>create</button>
-        </form>
+        <CreateBlog
+          newBlog={newBlog}
+          setNewBlog={setNewBlog}
+          createNewBlog={createNewBlog}
+        />
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} />
         ))}
