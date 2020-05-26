@@ -32,35 +32,50 @@ const App = () => {
     }
   }, []);
 
+  const resetMessage = () => {
+    setTimeout(() => {
+      setMessage(null);
+    }, 5000);
+  };
+
   const handleLogin = async (event) => {
     event.preventDefault();
+
     try {
       const user = await loginService.login({ username, password });
 
       setUser(user);
       window.localStorage.setItem('loggedblogUserJSON', JSON.stringify(user));
       blogService.setToken(user.token);
-      console.log('user sucessfully logged in');
+      setMessage(`user ${user.name} successfully logged in`);
+      resetMessage();
     } catch (exception) {
       console.log('invalid credentials');
+      setMessage('wrong username or password');
+      setIsError(true);
+
+      resetMessage();
     }
     setUsername('');
     setPassword('');
   };
 
   const handleLogout = () => {
+    // Clearing the local storage on the browser for this user session
     window.localStorage.clear();
     setUser(null);
     blogService.setToken(null);
-    console.log('successfully logged out');
+    setMessage(`user ${user.name} successfully logged out`);
+    resetMessage();
   };
 
   const createNewBlog = async (event) => {
     event.preventDefault();
-    console.log(newBlog);
+
     const savedBlog = await blogService.create(newBlog);
     setBlogs(blogs.concat(savedBlog));
-    console.log('new blog successfully created');
+    setMessage(`a new blog, ${savedBlog.title} by ${savedBlog.author} added`);
+    resetMessage();
 
     setNewBlog({
       title: '',
