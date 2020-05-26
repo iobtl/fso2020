@@ -36,6 +36,13 @@ const App = () => {
     setUsername('');
     setPassword('');
   };
+
+  const handleLogout = () => {
+    window.localStorage.clear();
+    setUser(null);
+    console.log('successfully logged out');
+  };
+
   if (user === null) {
     return (
       <div>
@@ -62,12 +69,19 @@ const App = () => {
       </div>
     );
   }
+
   return (
     <div>
-      <h2>blogs</h2>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+      <div>
+        <h2>blogs</h2>
+        <p>
+        {user.name} logged in
+        <button onClick={handleLogout}>logout</button>
+        </p>
+        {blogs.map((blog) => (
+          <Blog key={blog.id} blog={blog} />
+        ))}
+      </div>
     </div>
   );
 };
