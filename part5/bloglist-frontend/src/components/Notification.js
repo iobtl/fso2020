@@ -25,11 +25,9 @@ const Notification = ({ message, isError }) => {
 
   return (
     <div>
-    {message === null 
-    ? null
-    : <div style={notificationStyle}>{message}</div>}
+      {message === null ? null : <div style={notificationStyle}>{message}</div>}
     </div>
-  )
+  );
 };
 
 export default Notification;
