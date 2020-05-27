@@ -13,11 +13,6 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const [newBlog, setNewBlog] = useState({
-    title: '',
-    author: '',
-    url: '',
-  });
 
   const [message, setMessage] = useState(null);
   const [isError, setIsError] = useState(false);
@@ -81,19 +76,11 @@ const App = () => {
     resetMessage();
   };
 
-  const createNewBlog = async (event) => {
-    event.preventDefault();
-
+  const createNewBlog = async (newBlog) => {
     const savedBlog = await blogService.create(newBlog);
     setBlogs(blogs.concat(savedBlog));
     setMessage(`a new blog, ${savedBlog.title} by ${savedBlog.author} added`);
     resetMessage();
-
-    setNewBlog({
-      title: '',
-      author: '',
-      url: '',
-    });
   };
 
   return (
@@ -102,7 +89,7 @@ const App = () => {
         <h2>blogs</h2>
         <Notification message={message} isError={isError} />
         {user === null ? (
-          <Togglable buttonLabel="log in">
+          <Togglable buttonLabel='log in'>
             <Login
               username={username}
               setUsername={setUsername}
@@ -115,12 +102,8 @@ const App = () => {
           <Logout name={user.name} logout={handleLogout} />
         )}
         <h2>create new</h2>
-        <Togglable buttonLabel="new note">
-          <CreateBlog
-          newBlog={newBlog}
-          setNewBlog={setNewBlog}
-          createNewBlog={createNewBlog}
-        />
+        <Togglable buttonLabel='new note'>
+          <CreateBlog createNewBlog={createNewBlog} />
         </Togglable>
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} />
