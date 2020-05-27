@@ -67,7 +67,7 @@ const App = () => {
     setPassword('');
   };
 
-  const handleLogout = async (event) => {
+  const handleLogout = async () => {
     window.localStorage.clear();
     setUser(null);
     blogService.setToken(null);
@@ -78,7 +78,6 @@ const App = () => {
 
   const createNewBlog = async (newBlog) => {
     const savedBlog = await blogService.create(newBlog);
-    console.log(savedBlog)
     setBlogs(blogs.concat(savedBlog));
     setMessage(`a new blog, ${savedBlog.title} by ${savedBlog.author} added`);
     resetMessage();
@@ -96,7 +95,7 @@ const App = () => {
 
   const deleteBlog = async (id) => {
     await blogService.remove(id);
-    const deletedBlog = blogs.find(blog => blog.id === id)
+    const deletedBlog = blogs.find((blog) => blog.id === id);
     setBlogs(blogs.filter((blog) => blog.id !== id));
     setMessage(
       `the blog ${deletedBlog.title} by ${deletedBlog.author} has been deleted`

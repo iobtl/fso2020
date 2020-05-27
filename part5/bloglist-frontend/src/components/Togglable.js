@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 const Togglable = (props) => {
   const [visible, setVisible] = useState(false);
@@ -6,6 +7,10 @@ const Togglable = (props) => {
   // If visible, means the note creation form can be seen
   const toggleVisible = () => {
     setVisible(!visible);
+  };
+
+  Togglable.propTypes = {
+    buttonLabel: PropTypes.string.isRequired,
   };
 
   return (
