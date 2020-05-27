@@ -83,6 +83,17 @@ const App = () => {
     resetMessage();
   };
 
+  const likeBlog = async (id, newBlog) => {
+    const updatedBlog = await blogService.update(id, newBlog);
+    console.log(updatedBlog);
+    setBlogs(blogs.map((blog) => (blog.id !== id ? blog : newBlog)));
+    setMessage(
+      `blog ${updatedBlog.title} by ${updatedBlog.author} has been updated`
+    );
+
+    resetMessage();
+  };
+
   return (
     <div>
       <div>
@@ -102,11 +113,11 @@ const App = () => {
           <Logout name={user.name} logout={handleLogout} />
         )}
         <h2>create new</h2>
-        <Togglable buttonLabel='new note'>
+        <Togglable buttonLabel='create new blog'>
           <CreateBlog createNewBlog={createNewBlog} />
         </Togglable>
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} likeBlog={likeBlog} />
         ))}
       </div>
     </div>

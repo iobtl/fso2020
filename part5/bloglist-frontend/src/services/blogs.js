@@ -13,14 +13,21 @@ const getAll = async () => {
 };
 
 const create = async (newBlog) => {
-  console.log(newBlog);
   const config = {
     headers: { Authorization: token },
   };
 
   const response = await axios.post(baseUrl, newBlog, config);
-  console.log(response);
   return response.data;
 };
 
-export default { getAll, create, setToken };
+const update = async (id, newBlog) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const response = await axios.put(`${baseUrl}/${id}`, newBlog, config);
+  return response.data;
+};
+
+export default { getAll, create, update, setToken };
