@@ -6,6 +6,7 @@ import Blog from './components/Blog';
 import Login from './components/Login';
 import Logout from './components/Logout';
 import CreateBlog from './components/CreateBlog';
+import Togglable from './components/Togglable';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -26,18 +27,21 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedblogUserJSON');
-    if (loggedUserJSON) {
-      const loggedUser = JSON.parse(loggedUserJSON);
-      setUser(loggedUser);
-      blogService.setToken(loggedUser.token);
-      console.log('user successfully logged in');
+    const userJSON = window.localStorage.getItem('loggedblogUserJSON');
+    if (userJSON) {
+      const user = JSON.parse(userJSON);
+      setUser(user);
+      blogService.setToken(user.token);
+
+      setMessage(`user ${user.name} has successfully logged in`);
+      resetMessage();
     }
   }, []);
 
   const resetMessage = () => {
     setTimeout(() => {
       setMessage(null);
+      setIsError(false);
     }, 5000);
   };
 
@@ -45,30 +49,35 @@ const App = () => {
     event.preventDefault();
 
     try {
-      const user = await loginService.login({ username, password });
+      // Creating HTTP POST request to login page
+      const user = await loginService.create({ username, password });
 
+      // Registering user information in browser session and blog service
+      // From this point on, only identify by token
       setUser(user);
       window.localStorage.setItem('loggedblogUserJSON', JSON.stringify(user));
-      blogService.setToken(user.token);
-      setMessage(`user ${user.name} successfully logged in`);
+
+      // Notification alerts
+      setMessage(`user ${user.name} has successfully logged in`);
       resetMessage();
     } catch (exception) {
-      console.log('invalid credentials');
-      setMessage('wrong username or password');
+      setMessage('invalid username or password');
       setIsError(true);
 
       resetMessage();
     }
+
+    // Resetting username and password fields
     setUsername('');
     setPassword('');
   };
 
-  const handleLogout = () => {
-    // Clearing the local storage on the browser for this user session
+  const handleLogout = async (event) => {
     window.localStorage.clear();
     setUser(null);
     blogService.setToken(null);
-    setMessage(`user ${user.name} successfully logged out`);
+
+    setMessage('successfully logged out');
     resetMessage();
   };
 
@@ -93,22 +102,26 @@ const App = () => {
         <h2>blogs</h2>
         <Notification message={message} isError={isError} />
         {user === null ? (
-          <Login
-            username={username}
-            setUsername={setUsername}
-            password={password}
-            setPassword={setPassword}
-            handleLogin={handleLogin}
-          />
+          <Togglable buttonLabel="log in">
+            <Login
+              username={username}
+              setUsername={setUsername}
+              password={password}
+              setPassword={setPassword}
+              handleLogin={handleLogin}
+            />
+          </Togglable>
         ) : (
           <Logout name={user.name} logout={handleLogout} />
         )}
         <h2>create new</h2>
-        <CreateBlog
+        <Togglable buttonLabel="new note">
+          <CreateBlog
           newBlog={newBlog}
           setNewBlog={setNewBlog}
           createNewBlog={createNewBlog}
         />
+        </Togglable>
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} />
         ))}
