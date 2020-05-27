@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Blog = ({ blog, likeBlog, deleteBlog }) => {
   const [view, setView] = useState(false);

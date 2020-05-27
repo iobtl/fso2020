@@ -17,10 +17,12 @@ const App = () => {
   const [message, setMessage] = useState(null);
   const [isError, setIsError] = useState(false);
 
+  // Re-rendering blogs since 'populate' only called on first load of page
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, [blogs.length]);
 
+  // Retrieving existing user information in browser session, if any
   useEffect(() => {
     const userJSON = window.localStorage.getItem('loggedblogUserJSON');
     if (userJSON) {
@@ -33,6 +35,7 @@ const App = () => {
     }
   }, []);
 
+  // Helper function to remove notification after 5 seconds
   const resetMessage = () => {
     setTimeout(() => {
       setMessage(null);
@@ -40,6 +43,7 @@ const App = () => {
     }, 5000);
   };
 
+  // Handling user login page
   const handleLogin = async (event) => {
     event.preventDefault();
 
@@ -48,7 +52,7 @@ const App = () => {
       const user = await loginService.create({ username, password });
 
       // Registering user information in browser session and blog service
-      // From this point on, only identify by token
+      // From this point on, server only identify user by token
       setUser(user);
       window.localStorage.setItem('loggedblogUserJSON', JSON.stringify(user));
 
@@ -67,6 +71,7 @@ const App = () => {
     setPassword('');
   };
 
+  // Handling logout of user
   const handleLogout = async () => {
     window.localStorage.clear();
     setUser(null);
@@ -76,6 +81,7 @@ const App = () => {
     resetMessage();
   };
 
+  // Handling creation of new blog
   const createNewBlog = async (newBlog) => {
     const savedBlog = await blogService.create(newBlog);
     setBlogs(blogs.concat(savedBlog));
@@ -83,6 +89,7 @@ const App = () => {
     resetMessage();
   };
 
+  // Logic for changing likes of blogs
   const likeBlog = async (id, newBlog) => {
     const updatedBlog = await blogService.update(id, newBlog);
     setBlogs(blogs.map((blog) => (blog.id !== id ? blog : newBlog)));
@@ -93,6 +100,7 @@ const App = () => {
     resetMessage();
   };
 
+  // Handling deletion of a blog
   const deleteBlog = async (id) => {
     await blogService.remove(id);
     const deletedBlog = blogs.find((blog) => blog.id === id);
