@@ -19,7 +19,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+  }, [blogs.length]);
 
   useEffect(() => {
     const userJSON = window.localStorage.getItem('loggedblogUserJSON');
@@ -78,6 +78,7 @@ const App = () => {
 
   const createNewBlog = async (newBlog) => {
     const savedBlog = await blogService.create(newBlog);
+    console.log(savedBlog)
     setBlogs(blogs.concat(savedBlog));
     setMessage(`a new blog, ${savedBlog.title} by ${savedBlog.author} added`);
     resetMessage();
@@ -85,10 +86,20 @@ const App = () => {
 
   const likeBlog = async (id, newBlog) => {
     const updatedBlog = await blogService.update(id, newBlog);
-    console.log(updatedBlog);
     setBlogs(blogs.map((blog) => (blog.id !== id ? blog : newBlog)));
     setMessage(
       `blog ${updatedBlog.title} by ${updatedBlog.author} has been updated`
+    );
+
+    resetMessage();
+  };
+
+  const deleteBlog = async (id) => {
+    await blogService.remove(id);
+    const deletedBlog = blogs.find(blog => blog.id === id)
+    setBlogs(blogs.filter((blog) => blog.id !== id));
+    setMessage(
+      `the blog ${deletedBlog.title} by ${deletedBlog.author} has been deleted`
     );
 
     resetMessage();
@@ -116,9 +127,16 @@ const App = () => {
         <Togglable buttonLabel='create new blog'>
           <CreateBlog createNewBlog={createNewBlog} />
         </Togglable>
-        {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} likeBlog={likeBlog} />
-        ))}
+        {blogs
+          .sort((first, second) => second.likes - first.likes)
+          .map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              likeBlog={likeBlog}
+              deleteBlog={deleteBlog}
+            />
+          ))}
       </div>
     </div>
   );

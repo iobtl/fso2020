@@ -61,7 +61,7 @@ blogsRouter.delete('/:id', async (request, response, next) => {
   }
 
   await Blog.remove(blogToDelete);
-  response.status(204).send({ message: 'Blog deleted' });
+  response.status(204).json({ message: 'blog deleted' });
 });
 
 blogsRouter.put('/:id', async (request, response, next) => {
