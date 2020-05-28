@@ -35,7 +35,7 @@ const Blog = ({ blog, likeBlog, deleteBlog }) => {
 
   return (
     <div style={blogStyle}>
-      <div>
+      <div className='blogDiv'>
         {blog.title} {blog.author}
         {view === false ? (
           <inline>
