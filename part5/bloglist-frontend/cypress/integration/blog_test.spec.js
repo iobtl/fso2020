@@ -21,6 +21,12 @@ describe('Blog app', function () {
         password: 'hehexd',
       });
 
+      cy.request('POST', 'http://localhost:3003/api/users', {
+        username: 'tboi',
+        name: 'boi',
+        password: 'lollolxd',
+      });
+
       cy.visit('http://localhost:3000');
     });
 
@@ -75,6 +81,64 @@ describe('Blog app', function () {
           cy.contains('likes').should('contain', '0');
           cy.get('[data-cy=blog-likes-button]').click();
           cy.contains('likes').should('contain', '1');
+        });
+
+        it('the user who created the blog can delete it', function () {
+          cy.get('[data-cy=blog-view]').click();
+          cy.get('[data-cy=blog-remove]').click();
+
+          cy.get('.blogDiv')
+            .should('not.contain', 'How to git gud')
+            .and('not.exist');
+        });
+
+        it('a user who did not create the blog cannot delete it', function () {
+          cy.get('[data-cy=user-logout]').click();
+          cy.loginUser({ username: 'tboi', password: 'lollolxd' });
+
+          cy.get('[data-cy=blog-view]').click();
+          cy.get('[data-cy=blog-remove]').click();
+
+          cy.get('.blogDiv').should('contain', 'How to git gud').and('exist');
+        });
+      });
+
+      describe('and there are multiple existing blogs', function () {
+        beforeEach(function () {
+          cy.createBlog({
+            title: 'How to git gud',
+            author: 'Git Gud',
+            url: 'http://gettinggood.com',
+            likes: 100,
+          });
+
+          cy.createBlog({
+            title: 'Software Architecture',
+            author: 'Martin Fowler',
+            url: 'http://softwarearchitecture.com',
+            likes: 59,
+          });
+
+          cy.createBlog({
+            title: 'Software Engineering',
+            author: 'Martin Fowler',
+            url: 'http://softwareengineering.com',
+            likes: 68,
+          });
+
+          cy.get('[data-cy=blog-view]').click({ multiple: true });
+        });
+
+        it('the blogs are sorted by likes', function () {
+          cy.get('.blogDiv')
+            .eq(0)
+            .should('contain', 'likes 100')
+            .and('contain', 'How to git gud');
+
+          cy.get('.blogDiv')
+            .eq(1)
+            .should('contain', 'likes 68')
+            .and('contain', 'Software Engineering');
         });
       });
     });

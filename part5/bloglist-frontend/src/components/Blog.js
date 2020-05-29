@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const Blog = ({ blog, likeBlog, deleteBlog }) => {
   const [view, setView] = useState(false);
@@ -25,12 +25,7 @@ const Blog = ({ blog, likeBlog, deleteBlog }) => {
 
   const removeBlog = () => {
     const blogId = blog.id;
-    const confirmation = window.confirm(
-      `Remove ${blog.title} by ${blog.author}`
-    );
-    if (confirmation) {
-      deleteBlog(blogId);
-    }
+    deleteBlog(blogId);
   };
 
   return (
@@ -39,19 +34,27 @@ const Blog = ({ blog, likeBlog, deleteBlog }) => {
         {blog.title} {blog.author}
         {view === false ? (
           <inline>
-            <button data-cy='blog-view' onClick={toggleView}>view</button>
+            <button data-cy='blog-view' onClick={toggleView}>
+              view
+            </button>
           </inline>
         ) : (
           <inline>
-            <button data-cy='blog-view' onClick={toggleView}>hide</button>
+            <button data-cy='blog-view' onClick={toggleView}>
+              hide
+            </button>
             <p>{blog.url}</p>
-            <p>
+            <p data-cy='blog-likes'>
               likes {blog.likes}
-              <button data-cy='blog-likes-button' onClick={increaseLikes}>like</button>
+              <button data-cy='blog-likes-button' onClick={increaseLikes}>
+                like
+              </button>
             </p>
             <p>{blog.user.name}</p>
             <p>
-              <button onClick={removeBlog}>remove</button>
+              <button data-cy='blog-remove' onClick={removeBlog}>
+                remove
+              </button>
             </p>
           </inline>
         )}

@@ -5,7 +5,7 @@ const Logout = ({ name, logout }) => {
     <div>
       <p>
         {name} logged in
-        <button onClick={logout}>logout</button>
+        <button data-cy='user-logout' onClick={logout}>logout</button>
       </p>
     </div>
   );

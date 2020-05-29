@@ -93,14 +93,21 @@ const App = () => {
 
   // Handling deletion of a blog
   const deleteBlog = async (id) => {
-    await blogService.remove(id);
-    const deletedBlog = blogs.find((blog) => blog.id === id);
-    setBlogs(blogs.filter((blog) => blog.id !== id));
-    setMessage(
-      `the blog ${deletedBlog.title} by ${deletedBlog.author} has been deleted`
+    const confirmation = window.confirm(
+      `Remove the blog ${
+        JSON.stringify(blogs.find((blog) => blog.id === id).title)
+      }?`
     );
+    if (confirmation) {
+      await blogService.remove(id);
+      const deletedBlog = blogs.find((blog) => blog.id === id);
+      setBlogs(blogs.filter((blog) => blog.id !== id));
+      setMessage(
+        `the blog ${deletedBlog.title} by ${deletedBlog.author} has been deleted`
+      );
 
-    resetMessage();
+      resetMessage();
+    }
   };
 
   return (
@@ -114,7 +121,9 @@ const App = () => {
           </Togglable>
         ) : (
           <div>
-            <inline><Logout name={user.name} logout={handleLogout} /></inline>
+            <inline>
+              <Logout name={user.name} logout={handleLogout} />
+            </inline>
             <h2>create new</h2>
             <Togglable buttonLabel='create new blog'>
               <CreateBlog createNewBlog={createNewBlog} />
