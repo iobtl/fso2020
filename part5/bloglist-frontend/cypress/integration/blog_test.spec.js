@@ -45,13 +45,20 @@ describe('Blog app', function () {
       cy.get('.notification').should('contain', 'invalid username or password');
     });
 
-    it('can successfully make a login request', function () {
-      cy.request('POST', 'http://localhost:3003/api/login', {
-        username: 'iobt',
-        password: 'hehexd',
-      }).then((response) => {
-        localStorage.setItem('loggedBlogUser', JSON.stringify(response.body));
-        cy.visit('http://localhost:3000');
+    describe('When logged in', function () {
+      beforeEach(function () {
+        cy.loginUser({ username: 'iobt', password: 'hehexd' });
+      });
+
+      it('a new blog can be created', function () {
+        cy.contains('create new blog').click();
+
+        cy.get('input#title').type('How to git gud');
+        cy.get('input#author').type('Git Gud');
+        cy.get('input#url').type('http://gettinggood.com');
+        cy.get('[data-cy=createblog-submit]').click();
+
+        cy.get('.blogDiv').should('contain', 'How to git gud');
       });
     });
   });

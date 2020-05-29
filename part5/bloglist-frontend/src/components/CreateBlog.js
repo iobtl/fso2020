@@ -62,7 +62,7 @@ const CreateBlog = ({ createNewBlog }) => {
           }
         />
       </div>
-      <button type='submit'>create</button>
+      <button data-cy='createblog-submit' type='submit'>create</button>
     </form>
   );
 };
