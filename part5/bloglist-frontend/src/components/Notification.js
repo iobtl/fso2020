@@ -24,7 +24,7 @@ const Notification = ({ message, isError }) => {
   }
 
   return (
-    <div>
+    <div className='notification'>
       {message === null ? null : <div style={notificationStyle}>{message}</div>}
     </div>
   );

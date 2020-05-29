@@ -10,10 +10,7 @@ import Togglable from './components/Togglable';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-
   const [message, setMessage] = useState(null);
   const [isError, setIsError] = useState(false);
 
@@ -44,12 +41,10 @@ const App = () => {
   };
 
   // Handling user login page
-  const handleLogin = async (event) => {
-    event.preventDefault();
-
+  const handleLogin = async (newUser) => {
     try {
       // Creating HTTP POST request to login page
-      const user = await loginService.create({ username, password });
+      const user = await loginService.login(newUser);
 
       // Registering user information in browser session and blog service
       // From this point on, server only identify user by token
@@ -65,10 +60,6 @@ const App = () => {
 
       resetMessage();
     }
-
-    // Resetting username and password fields
-    setUsername('');
-    setPassword('');
   };
 
   // Handling logout of user
@@ -119,31 +110,27 @@ const App = () => {
         <Notification message={message} isError={isError} />
         {user === null ? (
           <Togglable buttonLabel='log in'>
-            <Login
-              username={username}
-              setUsername={setUsername}
-              password={password}
-              setPassword={setPassword}
-              handleLogin={handleLogin}
-            />
+            <Login handleLogin={handleLogin} />
           </Togglable>
         ) : (
-          <Logout name={user.name} logout={handleLogout} />
+          <div>
+            <inline><Logout name={user.name} logout={handleLogout} /></inline>
+            <h2>create new</h2>
+            <Togglable buttonLabel='create new blog'>
+              <CreateBlog createNewBlog={createNewBlog} />
+            </Togglable>
+            {blogs
+              .sort((first, second) => second.likes - first.likes)
+              .map((blog) => (
+                <Blog
+                  key={blog.id}
+                  blog={blog}
+                  likeBlog={likeBlog}
+                  deleteBlog={deleteBlog}
+                />
+              ))}
+          </div>
         )}
-        <h2>create new</h2>
-        <Togglable buttonLabel='create new blog'>
-          <CreateBlog createNewBlog={createNewBlog} />
-        </Togglable>
-        {blogs
-          .sort((first, second) => second.likes - first.likes)
-          .map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              likeBlog={likeBlog}
-              deleteBlog={deleteBlog}
-            />
-          ))}
       </div>
     </div>
   );
