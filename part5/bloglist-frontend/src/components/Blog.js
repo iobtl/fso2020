@@ -39,15 +39,15 @@ const Blog = ({ blog, likeBlog, deleteBlog }) => {
         {blog.title} {blog.author}
         {view === false ? (
           <inline>
-            <button onClick={toggleView}>view</button>
+            <button data-cy='blog-view' onClick={toggleView}>view</button>
           </inline>
         ) : (
           <inline>
-            <button onClick={toggleView}>hide</button>
+            <button data-cy='blog-view' onClick={toggleView}>hide</button>
             <p>{blog.url}</p>
             <p>
               likes {blog.likes}
-              <button onClick={increaseLikes}>like</button>
+              <button data-cy='blog-likes-button' onClick={increaseLikes}>like</button>
             </p>
             <p>{blog.user.name}</p>
             <p>

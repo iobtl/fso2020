@@ -60,6 +60,23 @@ describe('Blog app', function () {
 
         cy.get('.blogDiv').should('contain', 'How to git gud');
       });
+
+      describe('and there is an existing blog', function () {
+        beforeEach(function () {
+          cy.createBlog({
+            title: 'How to git gud',
+            author: 'Git Gud',
+            url: 'http://gettinggood.com',
+          });
+        });
+
+        it('a user can like the blog', function () {
+          cy.get('[data-cy=blog-view]').click();
+          cy.contains('likes').should('contain', '0');
+          cy.get('[data-cy=blog-likes-button]').click();
+          cy.contains('likes').should('contain', '1');
+        });
+      });
     });
   });
 });
