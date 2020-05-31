@@ -3,12 +3,12 @@
     {
       "content": "If it hurts, do it more often",
       "id": "47145",
-      "votes": 0
+      "votes": 5
     },
     {
       "content": "Adding manpower to a late software project makes it later!",
       "id": "21149",
-      "votes": 0
+      "votes": 1
     },
     {
       "content": "The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
@@ -34,6 +34,16 @@
       "content": "If you want to git gud, you need to feel gud",
       "id": "10425",
       "votes": 0
+    },
+    {
+      "content": "If you want to git bad, you will feel bad",
+      "id": "93317",
+      "votes": 0
+    },
+    {
+      "content": "If you want to git nowhere, you will be nowhere",
+      "id": "11378",
+      "votes": 1
     }
   ]
 }

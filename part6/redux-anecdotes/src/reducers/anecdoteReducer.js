@@ -19,20 +19,24 @@ export const voteAnecdote = (id) => {
 };
 
 export const createNewAnecdote = (content) => {
-  return {
-    type: 'CREATE',
-    data: {
-      content: content,
-      id: getId(),
-      votes: 0,
-    },
-  };
+  return async (dispatch) =>
+    dispatch({
+      type: 'CREATE',
+      data: {
+        content: content,
+        id: getId(),
+        votes: 0,
+      },
+    });
 };
 
-export const initializeAnecdotes = (data) => {
-  return {
-    type: 'INIT_ANECDOTE',
-    data: data,
+export const initializeAnecdotes = () => {
+  return async (dispatch) => {
+    const anecdotes = await anecdoteService.getAll();
+    dispatch({
+      type: 'INIT_ANECDOTE',
+      data: anecdotes,
+    });
   };
 };
 
@@ -49,17 +53,14 @@ const anecdoteReducer = (state = [], action) => {
         votes: anecdoteToUpdate.votes + 1,
       };
 
+      anecdoteService.update(action.data.id, updatedAnecdote);
+
       return state.map((anecdote) =>
         anecdote.id !== action.data.id ? anecdote : updatedAnecdote
       );
 
     case 'CREATE':
-      const newAnecdote = {
-        content: action.data.content,
-        id: getId(),
-        votes: 0,
-      };
-
+      const newAnecdote = action.data;
       anecdoteService.create(newAnecdote);
 
       return [...state, newAnecdote];

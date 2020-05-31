@@ -14,18 +14,20 @@ const AnecdoteList = () => {
   const vote = (id) => {
     dispatch(voteAnecdote(id));
     dispatch(
-      voteNotification(anecdotes.find((anecdote) => anecdote.id === id).content)
+      voteNotification(
+        anecdotes.find((anecdote) => anecdote.id === id).content,
+        5
+      )
     );
-    setTimeout(() => {
-      dispatch(blankNotification());
-    }, 5000);
   };
 
   return (
     <div>
       {anecdotes
         .sort((first, second) => second.votes - first.votes)
-        .filter((anecdote) => anecdote.content.toLowerCase().includes(filter))
+        .filter((anecdote) =>
+          anecdote.content.toLowerCase().includes(filter.toLowerCase())
+        )
         .map((anecdote) => (
           <div key={anecdote.id}>
             <div>{anecdote.content}</div>
