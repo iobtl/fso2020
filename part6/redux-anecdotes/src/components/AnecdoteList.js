@@ -8,11 +8,14 @@ import {
 
 const AnecdoteList = () => {
   const anecdotes = useSelector((state) => state.anecdotes);
+  const filter = useSelector((state) => state.filter);
   const dispatch = useDispatch();
 
   const vote = (id) => {
     dispatch(voteAnecdote(id));
-    dispatch(voteNotification(anecdotes.find(anecdote => anecdote.id === id).content));
+    dispatch(
+      voteNotification(anecdotes.find((anecdote) => anecdote.id === id).content)
+    );
     setTimeout(() => {
       dispatch(blankNotification());
     }, 5000);
@@ -22,6 +25,7 @@ const AnecdoteList = () => {
     <div>
       {anecdotes
         .sort((first, second) => second.votes - first.votes)
+        .filter((anecdote) => anecdote.content.toLowerCase().includes(filter))
         .map((anecdote) => (
           <div key={anecdote.id}>
             <div>{anecdote.content}</div>
