@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Switch, Link, Route } from 'react-router-dom';
+import { Switch, Link, Route, useRouteMatch, Redirect } from 'react-router-dom';
 
 const Menu = () => {
   const padding = {
@@ -25,9 +25,19 @@ const AnecdoteList = ({ anecdotes }) => (
     <h2>Anecdotes</h2>
     <ul>
       {anecdotes.map((anecdote) => (
-        <li key={anecdote.id}>{anecdote.content}</li>
+        <li key={anecdote.id}>
+          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+        </li>
       ))}
     </ul>
+  </div>
+);
+
+const Anecdote = ({ anecdote }) => (
+  <div>
+    <h2>{anecdote.content}</h2>
+    <p>has {anecdote.votes} votes</p>
+    <p>for more info see {anecdote.url}</p>
   </div>
 );
 
@@ -67,19 +77,27 @@ const Footer = () => (
   </div>
 );
 
-const CreateNew = (props) => {
+const CreateNew = ({ addNew }) => {
   const [content, setContent] = useState('');
   const [author, setAuthor] = useState('');
   const [info, setInfo] = useState('');
 
+  const resetFields = () => {
+    setContent('');
+    setAuthor('');
+    setInfo('');
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.addNew({
+    addNew({
       content,
       author,
       info,
       votes: 0,
     });
+
+    resetFields();
   };
 
   return (
@@ -110,11 +128,13 @@ const CreateNew = (props) => {
             onChange={(e) => setInfo(e.target.value)}
           />
         </div>
-        <button>create</button>
+        <button type='submit'>create</button>
       </form>
     </div>
   );
 };
+
+const Notification = ({ message }) => <div>{message}</div>;
 
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
@@ -134,15 +154,23 @@ const App = () => {
     },
   ]);
 
+  const [notification, setNotification] = useState(null);
+
+  const displayNotification = (message) => {
+    setNotification(message);
+    setTimeout(() => {
+      setNotification(null);
+    }, 10000);
+  };
+
   const padding = {
     padding: 5,
   };
 
-  const [notification, setNotification] = useState('');
-
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0);
     setAnecdotes(anecdotes.concat(anecdote));
+    displayNotification(`a new anecdote ${anecdote.content} created!`);
   };
 
   const anecdoteById = (id) => anecdotes.find((a) => a.id === id);
@@ -158,34 +186,43 @@ const App = () => {
     setAnecdotes(anecdotes.map((a) => (a.id === id ? voted : a)));
   };
 
+  const match = useRouteMatch('/anecdotes/:id');
+  const anecdote = match ? anecdoteById(match.params.id) : null;
+
   return (
     <div>
-      <Router>
-        <h1>Software anecdotes</h1>
-        <div>
-          <Link style={padding} to='/'>
-            anecdotes
-          </Link>
-          <Link style={padding} to='/about'>
-            about
-          </Link>
-          <Link style={padding} to='/create'>
-            create new
-          </Link>
-        </div>
-        <Switch>
-          <Route path='/about'>
-            <About />
-          </Route>
-          <Route path='/create'>
+      <h1>Software anecdotes</h1>
+      <div>
+        <Link style={padding} to='/'>
+          anecdotes
+        </Link>
+        <Link style={padding} to='/about'>
+          about
+        </Link>
+        <Link style={padding} to='/create'>
+          create new
+        </Link>
+      </div>
+      <Notification message={notification} />
+      <Switch>
+        <Route path='/anecdotes/:id'>
+          <Anecdote anecdote={anecdote} />
+        </Route>
+        <Route path='/about'>
+          <About />
+        </Route>
+        <Route path='/create'>
+          {notification === null ? (
             <CreateNew addNew={addNew} />
-          </Route>
-          <Route path='/'>
-            <AnecdoteList anecdotes={anecdotes} />
-          </Route>
-        </Switch>
-        <Footer />
-      </Router>
+          ) : (
+            <Redirect to='/' />
+          )}
+        </Route>
+        <Route path='/'>
+          <AnecdoteList anecdotes={anecdotes} />
+        </Route>
+      </Switch>
+      <Footer />
     </div>
   );
 };
