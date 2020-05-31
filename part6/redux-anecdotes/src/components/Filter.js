@@ -1,14 +1,10 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { changeInput } from '../reducers/filterReducer';
-import { filterAnecdote } from '../reducers/anecdoteReducer';
 
-const Filter = () => {
-  const dispatch = useDispatch();
-
+const Filter = (props) => {
   const handleChange = (event) => {
-    console.log(event.target.value);
-    dispatch(changeInput(event.target.value));
+    props.changeInput(event.target.value);
   };
 
   const style = {
@@ -22,4 +18,4 @@ const Filter = () => {
   );
 };
 
-export default Filter;
+export default connect(null, { changeInput })(Filter);

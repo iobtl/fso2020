@@ -1,4 +1,7 @@
+const timeouts = [];
+
 export const voteNotification = (content, timeout) => {
+  timeouts.forEach((timeout) => clearTimeout(timeout));
   return async (dispatch) => {
     dispatch({
       type: 'UPVOTE',
@@ -9,6 +12,7 @@ export const voteNotification = (content, timeout) => {
 };
 
 export const createNotification = (content, timeout) => {
+  timeouts.forEach((timeout) => clearTimeout(timeout));
   return async (dispatch) => {
     dispatch({
       type: 'ADD',
@@ -20,12 +24,13 @@ export const createNotification = (content, timeout) => {
 
 export const blankNotification = (timeout) => {
   return async (dispatch) => {
-    setTimeout(() => {
+    const id = setTimeout(() => {
       dispatch({
         type: 'BLANK',
         timeout,
       });
     }, timeout * 1000);
+    timeouts.push(id);
   };
 };
 
