@@ -29,8 +29,10 @@ const useCountry = (name) => {
       let filteredCountry = results.filter(
         (country) => country.name.toLowerCase() === name.toLowerCase()
       );
-      filteredCountry = filteredCountry[0];
-      filteredCountry.found = true;
+      if (filteredCountry.length !== 0) {
+        filteredCountry = filteredCountry[0];
+        filteredCountry.found = true;
+      }
       setCountry(filteredCountry);
     }
   }, [name]);
