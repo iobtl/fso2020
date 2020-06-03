@@ -125,12 +125,16 @@ const App = () => {
     }
   };
 
-  const match = useRouteMatch('/:id');
+  const match = useRouteMatch('/users/:id');
+  // Finding the user which matches the id parameter in the URL
   const blogUser = match
     ? blogs.find((blog) => blog.user.id === match.params.id)
     : null;
 
-  const userBlogs = blogs.filter((blog) => blog.user.id === blogUser.user.id);
+  // Finding all the blogs which the particular found user has posted
+  const userBlogs = blogUser
+    ? blogs.filter((blog) => blog.user.id === blogUser.user.id)
+    : null;
 
   return (
     <div>
@@ -150,25 +154,16 @@ const App = () => {
             <Togglable buttonLabel='create new blog'>
               <CreateBlog createNewBlog={createNewBlog} />
             </Togglable>
-            <h2>Users</h2>
-            <Users />
-            {blogs
-              .sort((first, second) => second.likes - first.likes)
-              .map((blog) => (
-                <Blog
-                  key={blog.id}
-                  blog={blog}
-                  likeBlog={likeBlog}
-                  deleteBlog={deleteBlog}
-                />
-              ))}
           </div>
         )}
       </div>
 
       <Switch>
-        <Route path='/:id'>
+        <Route path='/users/:id'>
           <User user={blogUser} blogs={userBlogs} />
+        </Route>
+        <Route path='/users'>
+          <Users />
         </Route>
       </Switch>
     </div>

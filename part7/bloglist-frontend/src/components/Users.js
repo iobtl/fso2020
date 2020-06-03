@@ -16,11 +16,11 @@ export const User = ({ user, blogs }) => {
   console.log(blogs);
   return (
     <div>
-      <h2>{user.name}</h2>
+      <h2>{user.user.name}</h2>
       <h3>added blogs</h3>
       <ul>
         {blogs.map((blog) => (
-          <li>{blog.title}</li>
+          <li key={blog.id}>{blog.title}</li>
         ))}
       </ul>
     </div>
@@ -39,6 +39,7 @@ const Users = () => {
 
   return (
     <div>
+      <h2>Users</h2>
       <table>
         <tbody>
           <tr>
@@ -51,7 +52,7 @@ const Users = () => {
 
             return (
               <tr>
-                <Link to={`/${userId}`}>
+                <Link to={`/users/${userId}`}>
                   <td key={userId}>{userBlogCount[0]}</td>
                 </Link>
                 <td>{userBlogCount[1]}</td>
