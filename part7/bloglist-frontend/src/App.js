@@ -19,6 +19,9 @@ import {
   removeBlogAction,
 } from './reducers/blogReducer';
 
+import { User } from './components/Users';
+import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
+
 const App = () => {
   const [user, setUser] = useState(null);
   const [isError, setIsError] = useState(false);
@@ -122,6 +125,13 @@ const App = () => {
     }
   };
 
+  const match = useRouteMatch('/:id');
+  const blogUser = match
+    ? blogs.find((blog) => blog.user.id === match.params.id)
+    : null;
+
+  const userBlogs = blogs.filter((blog) => blog.user.id === blogUser.user.id);
+
   return (
     <div>
       <div>
@@ -155,6 +165,12 @@ const App = () => {
           </div>
         )}
       </div>
+
+      <Switch>
+        <Route path='/:id'>
+          <User user={blogUser} blogs={userBlogs} />
+        </Route>
+      </Switch>
     </div>
   );
 };
