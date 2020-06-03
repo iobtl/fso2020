@@ -7,6 +7,8 @@ import Login from './components/Login';
 import Logout from './components/Logout';
 import CreateBlog from './components/CreateBlog';
 import Togglable from './components/Togglable';
+import Users from './components/Users';
+
 import { sendNotification } from './reducers/notificationReducer';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -138,6 +140,8 @@ const App = () => {
             <Togglable buttonLabel='create new blog'>
               <CreateBlog createNewBlog={createNewBlog} />
             </Togglable>
+            <h2>Users</h2>
+            <Users />
             {blogs
               .sort((first, second) => second.likes - first.likes)
               .map((blog) => (
