@@ -13,10 +13,12 @@ export const User = ({ user, blogs }) => {
     return null;
   }
 
-  console.log(blogs);
   return (
     <div>
-      <h2>{user.user.name}</h2>
+      <h2 style={{ display: 'inline' }}>{user.user.name}</h2>
+      <Link style={{ paddingLeft: 5 }} to='/users'>
+        back
+      </Link>
       <h3>added blogs</h3>
       <ul>
         {blogs.map((blog) => (
