@@ -1,5 +1,8 @@
 // Action creators
+const timeouts = [];
+
 export const sendNotification = (message) => {
+  timeouts.forEach((id) => window.clearTimeout(id));
   return (dispatch) => {
     dispatch({
       type: 'MESSAGE',
@@ -11,11 +14,12 @@ export const sendNotification = (message) => {
 
 export const resetNotification = (time) => {
   return (dispatch) => {
-    setTimeout(() => {
+    const id = setTimeout(() => {
       dispatch({
         type: 'RESET',
       });
     }, time * 1000);
+    timeouts.push(id);
   };
 };
 

@@ -7,19 +7,26 @@ import Login from './components/Login';
 import Logout from './components/Logout';
 import CreateBlog from './components/CreateBlog';
 import Togglable from './components/Togglable';
-import { sendNotification } from './components/notificationReducer';
+import { sendNotification } from './reducers/notificationReducer';
 import { useSelector, useDispatch } from 'react-redux';
 
+import {
+  initializeBlogs,
+  createNewBlogAction,
+  likeBlogAction,
+  removeBlogAction,
+} from './reducers/blogReducer';
+
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [isError, setIsError] = useState(false);
 
+  const blogs = useSelector((state) => state.blogs);
   const dispatch = useDispatch();
 
   // Re-rendering blogs since 'populate' only called on first load of page
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    dispatch(initializeBlogs());
   }, [blogs.length]);
 
   // Retrieving existing user information in browser session, if any
@@ -70,21 +77,19 @@ const App = () => {
 
   // Handling creation of new blog
   const createNewBlog = async (newBlog) => {
-    const savedBlog = await blogService.create(newBlog);
-    setBlogs(blogs.concat(savedBlog));
+    dispatch(createNewBlogAction(newBlog));
     dispatch(
       sendNotification(
-        `a new blog, ${savedBlog.title} by ${savedBlog.author} added`
+        `a new blog, ${newBlog.title} by ${newBlog.author} added`
       )
     );
   };
 
   // Logic for changing likes of blogs
   const likeBlog = async (id, newBlog) => {
-    const updatedBlog = await blogService.update(id, newBlog);
-    setBlogs(blogs.map((blog) => (blog.id !== id ? blog : newBlog)));
+    dispatch(likeBlogAction(id, newBlog));
 
-    const message = `the blog ${updatedBlog.title} has been updated`;
+    const message = `the blog ${newBlog.title} has been updated`;
     dispatch(sendNotification(message));
   };
 
@@ -96,9 +101,8 @@ const App = () => {
       )}?`
     );
     if (confirmation) {
-      await blogService.remove(id);
       const deletedBlog = blogs.find((blog) => blog.id === id);
-      setBlogs(blogs.filter((blog) => blog.id !== id));
+      dispatch(removeBlogAction(id));
       dispatch(
         sendNotification(
           `the blog ${deletedBlog.title} by ${deletedBlog.author} has been deleted`
