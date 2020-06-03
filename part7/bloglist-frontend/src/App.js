@@ -102,12 +102,21 @@ const App = () => {
     );
     if (confirmation) {
       const deletedBlog = blogs.find((blog) => blog.id === id);
-      dispatch(removeBlogAction(id));
-      dispatch(
-        sendNotification(
-          `the blog ${deletedBlog.title} by ${deletedBlog.author} has been deleted`
-        )
-      );
+      try {
+        dispatch(removeBlogAction(id));
+        dispatch(
+          sendNotification(
+            `the blog ${deletedBlog.title} by ${deletedBlog.author} has been deleted`
+          )
+        );
+      } catch (err) {
+        dispatch(sendNotification('user unauthorized'));
+        setIsError(true);
+
+        setTimeout(() => {
+          setIsError(false);
+        }, 5000);
+      }
     }
   };
 

@@ -23,6 +23,7 @@ export const createNewBlogAction = (blog) => {
 export const likeBlogAction = (id, newBlog) => {
   return async (dispatch) => {
     const updatedBlog = await blogService.update(id, newBlog);
+    console.log(updatedBlog);
     dispatch({
       type: 'LIKE',
       updatedBlog,
@@ -35,7 +36,7 @@ export const removeBlogAction = (id) => {
     const removedBlog = await blogService.remove(id);
     dispatch({
       type: 'REMOVE',
-      removedBlog,
+      id,
     });
   };
 };
@@ -48,10 +49,11 @@ const blogReducer = (state = [], action) => {
       return [...state, action.newBlog];
     case 'LIKE':
       return state.map((blog) =>
-        blog.id !== action.updatedBlog.id ? blog : action.updatedBlog
+        blog.id !== action.updatedBlog.body.id ? blog : action.updatedBlog.body
       );
     case 'REMOVE':
-      return state.filter((blog) => blog.id !== action.newBlog.id);
+      const filteredBlogs = state.filter((blog) => blog.id !== action.id);
+      return filteredBlogs;
     default:
       return state;
   }

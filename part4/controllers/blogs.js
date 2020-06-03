@@ -76,8 +76,13 @@ blogsRouter.put('/:id', async (request, response, next) => {
     request.params.id,
     newBlog,
     { new: true }
-  );
-  response.status(200).json(returnedBlog);
+  ).populate('user', {
+    username: 1,
+    name: 1,
+    id: 1
+  });
+
+  response.status(200).json(newBlog);
 });
 
 module.exports = blogsRouter;
