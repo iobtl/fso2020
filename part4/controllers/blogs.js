@@ -43,6 +43,19 @@ blogsRouter.post('/', async (request, response, next) => {
   response.status(200).json(savedBlog.toJSON());
 });
 
+blogsRouter.post('/:id/comments', async (request, response, next) => {
+  const body = request.body;
+  console.log(body);
+
+  const blog = await Blog.findById(request.params.id);
+  console.log(blog);
+  await blog.updateOne({
+    comments: [...blog.comments, body.comment],
+  });
+
+  response.status(200).json({ message: 'comment added' });
+});
+
 blogsRouter.delete('/:id', async (request, response, next) => {
   const blogToDelete = await Blog.findById(request.params.id);
 
@@ -79,7 +92,7 @@ blogsRouter.put('/:id', async (request, response, next) => {
   ).populate('user', {
     username: 1,
     name: 1,
-    id: 1
+    id: 1,
   });
 
   response.status(200).json(newBlog);

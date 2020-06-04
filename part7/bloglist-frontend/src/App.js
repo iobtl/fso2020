@@ -145,7 +145,6 @@ const App = () => {
   return (
     <div>
       <div>
-        <h2>blogs</h2>
         <Notification isError={isError} />
         {user === null ? (
           <Togglable buttonLabel='log in'>
@@ -153,10 +152,16 @@ const App = () => {
           </Togglable>
         ) : (
           <div>
-            <inline>
+            <div>
+              <Link style={{ paddingLeft: 5 }} to='/blogs'>
+                blogs
+              </Link>
+              <Link style={{ paddingLeft: 5 }} to='/users'>
+                users
+              </Link>
               <Logout name={user.name} logout={handleLogout} />
-            </inline>
-            <h2>create new</h2>
+            </div>
+            <h2>blog app</h2>
             <Togglable buttonLabel='create new blog'>
               <CreateBlog createNewBlog={createNewBlog} />
             </Togglable>
@@ -175,9 +180,9 @@ const App = () => {
           <SingleBlog blog={singleBlog} likeBlog={likeBlog} />
         </Route>
         <Route path='/'>
-          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
-          ))}
+          {user === null
+            ? null
+            : blogs.map((blog) => <Blog key={blog.id} blog={blog} />)}
         </Route>
       </Switch>
     </div>
