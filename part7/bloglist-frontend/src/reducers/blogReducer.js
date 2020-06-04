@@ -41,6 +41,16 @@ export const removeBlogAction = (id) => {
   };
 };
 
+export const commentBlogAction = (id, comment) => {
+  return async (dispatch) => {
+    const commentedBlog = await blogService.comment(id, comment);
+    dispatch({
+      type: 'COMMENT',
+      commentedBlog,
+    });
+  };
+};
+
 const blogReducer = (state = [], action) => {
   switch (action.type) {
     case 'INIT_BLOGS':
@@ -54,6 +64,10 @@ const blogReducer = (state = [], action) => {
     case 'REMOVE':
       const filteredBlogs = state.filter((blog) => blog.id !== action.id);
       return filteredBlogs;
+    case 'COMMENT':
+      return state.map((blog) =>
+        blog.id !== action.commentedBlog.id ? blog : action.commentedBlog
+      );
     default:
       return state;
   }

@@ -49,11 +49,15 @@ blogsRouter.post('/:id/comments', async (request, response, next) => {
 
   const blog = await Blog.findById(request.params.id);
   console.log(blog);
-  await blog.updateOne({
-    comments: [...blog.comments, body.comment],
-  });
+  const updatedBlog = await Blog.findByIdAndUpdate(
+    request.params.id,
+    {
+      comments: [...blog.comments, body.comment],
+    },
+    { new: true }
+  );
 
-  response.status(200).json({ message: 'comment added' });
+  response.status(200).json(updatedBlog);
 });
 
 blogsRouter.delete('/:id', async (request, response, next) => {

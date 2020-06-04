@@ -1,10 +1,26 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { commentBlogAction } from '../reducers/blogReducer';
+import { useDispatch } from 'react-redux';
 
 export const SingleBlog = ({ blog, likeBlog }) => {
+  const [comment, setComment] = useState('');
+  const dispatch = useDispatch();
+
   if (!blog) {
     return null;
   }
+
+  const handleNewCommentInput = (event) => {
+    setComment(event.target.value);
+  };
+
+  const postNewComment = (event) => {
+    event.preventDefault();
+    dispatch(commentBlogAction(blog.id, comment));
+
+    setComment('');
+  };
 
   const increaseLikes = () => {
     const newBlog = {
@@ -16,16 +32,30 @@ export const SingleBlog = ({ blog, likeBlog }) => {
 
   return (
     <div>
-      <h2 style={{ display: 'inline', paddingRight: 5 }}>{blog.title}</h2>
-      <Link to='/'>back</Link>
-      <p>{blog.url}</p>
-      <p data-cy='blog-likes'>
-        likes {blog.likes}
-        <button data-cy='blog-likes-button' onClick={increaseLikes}>
-          like
-        </button>
-      </p>
-      <p>{blog.user.name}</p>
+      <div>
+        <h2 style={{ display: 'inline', paddingRight: 5 }}>{blog.title}</h2>
+        <Link to='/'>back</Link>
+        <p>{blog.url}</p>
+        <p data-cy='blog-likes'>
+          likes {blog.likes}
+          <button data-cy='blog-likes-button' onClick={increaseLikes}>
+            like
+          </button>
+        </p>
+        <p>{blog.user.name}</p>
+      </div>
+      <div>
+        <h3>comments</h3>
+        <form onSubmit={postNewComment}>
+          <input onChange={handleNewCommentInput} value={comment} type='text' />
+          <button>add comment</button>
+        </form>
+        <ul>
+          {blog.comments.map((comment) => (
+            <li key={blog.comments.indexOf(comment)}>{comment}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

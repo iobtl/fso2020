@@ -9,7 +9,6 @@ const setToken = (newToken) => {
 
 const getAll = async () => {
   const response = await axios.get(baseUrl);
-  console.log(response.data);
   return response.data;
 };
 
@@ -41,7 +40,7 @@ const remove = async (id) => {
 };
 
 const comment = async (id, comment) => {
-  const response = await axios.post(`${baseUrl}/${id}/comments`, comment);
+  const response = await axios.post(`${baseUrl}/${id}/comments`, { comment });
   return response.data;
 };
 
