@@ -23,7 +23,7 @@ import { User } from './components/Users';
 import { SingleBlog } from './components/Blog';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
 
-import { Navbar, Nav } from 'react-bootstrap';
+import { Navbar, Nav, ListGroup } from 'react-bootstrap';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -186,7 +186,13 @@ const App = () => {
         <Route path='/'>
           {user === null
             ? null
-            : blogs.map((blog) => <Blog key={blog.id} blog={blog} />)}
+            : blogs.map((blog) => (
+                <ListGroup>
+                  <ListGroup.Item>
+                    <Blog key={blog.id} blog={blog} />
+                  </ListGroup.Item>
+                </ListGroup>
+              ))}
         </Route>
       </Switch>
     </div>

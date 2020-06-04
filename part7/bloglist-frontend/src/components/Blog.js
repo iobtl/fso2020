@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { commentBlogAction } from '../reducers/blogReducer';
 import { useDispatch } from 'react-redux';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 
 export const SingleBlog = ({ blog, likeBlog }) => {
   const [comment, setComment] = useState('');
@@ -46,10 +48,16 @@ export const SingleBlog = ({ blog, likeBlog }) => {
       </div>
       <div>
         <h3>comments</h3>
-        <form onSubmit={postNewComment}>
-          <input onChange={handleNewCommentInput} value={comment} type='text' />
-          <button>add comment</button>
-        </form>
+        <Form onSubmit={postNewComment}>
+          <Form.Control
+            onChange={handleNewCommentInput}
+            value={comment}
+            type='text'
+          />
+          <Button type='submit' style={{ marginTop: 5 }} variant='primary'>
+            add comment
+          </Button>
+        </Form>
         <ul>
           {blog.comments.map((comment) => (
             <li key={blog.comments.indexOf(comment)}>{comment}</li>
@@ -61,17 +69,8 @@ export const SingleBlog = ({ blog, likeBlog }) => {
 };
 
 const Blog = ({ blog }) => {
-  const blogStyle = {
-    marginTop: 5,
-    marginBottom: 5,
-    borderWidth: 2,
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-  };
-
   return (
-    <div style={blogStyle}>
+    <div>
       <div className='blogDiv'>
         <Link to={`/blogs/${blog.id}`}>
           {blog.title} {blog.author}
