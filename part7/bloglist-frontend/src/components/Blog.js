@@ -1,4 +1,24 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+
+export const SingleBlog = ({ blog }) => {
+  if (!blog) {
+    return null;
+  }
+
+  return (
+    <div>
+      <h2>{blog.title}</h2>
+      <Link to='/'>back</Link>
+      <p>{blog.url}</p>
+      <p data-cy='blog-likes'>
+        likes {blog.likes}
+        <button data-cy='blog-likes-button'>like</button>
+      </p>
+      <p>{blog.user.name}</p>
+    </div>
+  );
+};
 
 const Blog = ({ blog, likeBlog, deleteBlog }) => {
   const [view, setView] = useState(false);
@@ -31,7 +51,9 @@ const Blog = ({ blog, likeBlog, deleteBlog }) => {
   return (
     <div style={blogStyle}>
       <div className='blogDiv'>
-        {blog.title} {blog.author}
+        <Link to={`/blogs/${blog.id}`}>
+          {blog.title} {blog.author}
+        </Link>
         {view === false ? (
           <inline>
             <button data-cy='blog-view' onClick={toggleView}>

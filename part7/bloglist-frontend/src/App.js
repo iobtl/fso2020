@@ -20,6 +20,7 @@ import {
 } from './reducers/blogReducer';
 
 import { User } from './components/Users';
+import { SingleBlog } from './components/Blog';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
 
 const App = () => {
@@ -125,15 +126,20 @@ const App = () => {
     }
   };
 
-  const match = useRouteMatch('/users/:id');
+  const userMatch = useRouteMatch('/users/:id');
   // Finding the user which matches the id parameter in the URL
-  const blogUser = match
-    ? blogs.find((blog) => blog.user.id === match.params.id)
+  const blogUser = userMatch
+    ? blogs.find((blog) => blog.user.id === userMatch.params.id)
     : null;
 
   // Finding all the blogs which the particular found user has posted
   const userBlogs = blogUser
     ? blogs.filter((blog) => blog.user.id === blogUser.user.id)
+    : null;
+
+  const blogMatch = useRouteMatch('/blogs/:id');
+  const singleBlog = blogMatch
+    ? blogs.find((blog) => blog.id === blogMatch.params.id)
     : null;
 
   return (
@@ -164,6 +170,19 @@ const App = () => {
         </Route>
         <Route path='/users'>
           <Users />
+        </Route>
+        <Route path='/blogs/:id'>
+          <SingleBlog blog={singleBlog} />
+        </Route>
+        <Route path='/'>
+          {blogs.map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              likeBlog={likeBlog}
+              deleteBlog={deleteBlog}
+            />
+          ))}
         </Route>
       </Switch>
     </div>

@@ -1,12 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import {
-  BrowserRouter as Router,
-  Link,
-  Switch,
-  Route,
-  useRouteMatch,
-} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export const User = ({ user, blogs }) => {
   if (!user) {
@@ -15,8 +9,8 @@ export const User = ({ user, blogs }) => {
 
   return (
     <div>
-      <h2 style={{ display: 'inline' }}>{user.user.name}</h2>
-      <Link style={{ paddingLeft: 5 }} to='/users'>
+      <h2 style={{ display: 'inline', paddingTop: 5 }}>{user.user.name}</h2>
+      <Link style={{ paddingLeft: 5, paddingTop: 5 }} to='/users'>
         back
       </Link>
       <h3>added blogs</h3>
