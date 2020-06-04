@@ -62,11 +62,12 @@ export const SingleBlog = ({ blog, likeBlog }) => {
 
 const Blog = ({ blog }) => {
   const blogStyle = {
+    marginTop: 5,
+    marginBottom: 5,
+    borderWidth: 2,
     paddingTop: 10,
     paddingLeft: 2,
     border: 'solid',
-    borderWidth: 2,
-    marginBottom: 5,
   };
 
   return (

@@ -23,6 +23,8 @@ import { User } from './components/Users';
 import { SingleBlog } from './components/Blog';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
 
+import { Navbar, Nav } from 'react-bootstrap';
+
 const App = () => {
   const [user, setUser] = useState(null);
   const [isError, setIsError] = useState(false);
@@ -153,18 +155,20 @@ const App = () => {
         ) : (
           <div>
             <div>
-              <Link style={{ paddingLeft: 5 }} to='/blogs'>
-                blogs
-              </Link>
-              <Link style={{ paddingLeft: 5 }} to='/users'>
-                users
-              </Link>
-              <Logout name={user.name} logout={handleLogout} />
+              <Navbar bg='light' variant='dark'>
+                <Nav.Link style={{ paddingLeft: 5 }} href='/blogs'>
+                  blogs
+                </Nav.Link>
+                <Nav.Link style={{ paddingLeft: 5 }} href='/users'>
+                  users
+                </Nav.Link>
+                <Logout name={user.name} logout={handleLogout} />
+              </Navbar>
+              <h2>Blog Application</h2>
+              <Togglable buttonLabel='create new blog'>
+                <CreateBlog createNewBlog={createNewBlog} />
+              </Togglable>
             </div>
-            <h2>blog app</h2>
-            <Togglable buttonLabel='create new blog'>
-              <CreateBlog createNewBlog={createNewBlog} />
-            </Togglable>
           </div>
         )}
       </div>

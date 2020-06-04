@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Button from 'react-bootstrap/Button';
 
 const Login = ({ handleLogin }) => {
   const [username, setUsername] = useState('');
@@ -41,9 +42,9 @@ const Login = ({ handleLogin }) => {
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button data-cy='login-button' type='submit'>
+        <Button variant='outline-primary' data-cy='login-button' type='submit'>
           login
-        </button>
+        </Button>
       </form>
     </div>
   );
