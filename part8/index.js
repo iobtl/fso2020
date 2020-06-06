@@ -120,23 +120,30 @@ const resolvers = {
   },
   Author: {
     bookCount: async (root) => {
-      console.log(await Book.find({}).populate('author', { name: 1, _id: 1 }));
-      console.log(root);
       const books = await Book.find({});
       return books.length;
     },
   },
   Mutation: {
     addBook: async (root, args) => {
-      const author = await Author.find({ name: args.author });
-      const newBook = new Book({
+      let author = await Author.findOne({ name: args.author });
+      if (!author) {
+        author = new Author({
+          name: args.author,
+        });
+
+        await author.save();
+      }
+
+      let newBook = new Book({
         ...args,
         author: author._id,
       });
 
       await newBook.save();
+      newBook = await newBook.populate('author');
 
-      return newBook;
+      return newBook.populate('author').execPopulate();
     },
     editAuthor: async (root, args) => {
       const author = Author.findOne({ name: args.name });
