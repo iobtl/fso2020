@@ -15,7 +15,6 @@ const Authors = ({ authors, show }) => {
     return null;
   }
 
-  console.log(authors);
   const authorOptions = authors.map(
     (author) => new Object({ value: author.name, label: author.name })
   );
