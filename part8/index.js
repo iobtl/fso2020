@@ -116,24 +116,19 @@ const resolvers = {
 
       return filteredGenres;
     },
-    allAuthors: async () => await Author.find({}),
+    allAuthors: () => Author.find({}),
   },
   Author: {
-    bookCount: async (root) =>
-      await Book.find({ author: root.name }).countDocuments(),
+    bookCount: async (root) => {
+      console.log(await Book.find({}).populate('author', { name: 1, _id: 1 }));
+      console.log(root);
+      const books = await Book.find({});
+      return books.length;
+    },
   },
   Mutation: {
     addBook: async (root, args) => {
-      if (!Author.find({ name: args.author })) {
-        console.log('author not found');
-        const author = new Author({
-          name: args.author,
-        });
-        await author.save();
-      } else {
-        const author = await Author.find({ name: args.author });
-      }
-
+      const author = await Author.find({ name: args.author });
       const newBook = new Book({
         ...args,
         author: author._id,
