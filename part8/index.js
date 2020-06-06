@@ -149,9 +149,9 @@ const resolvers = {
       });
 
       await newBook.save();
-      newBook = await newBook.populate('author');
+      newBook = await newBook.populate('author').execPopulate();
 
-      return newBook.populate('author').execPopulate();
+      return newBook;
     },
     editAuthor: async (root, args) => {
       const author = await Author.findOneAndUpdate(
