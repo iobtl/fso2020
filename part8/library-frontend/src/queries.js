@@ -24,7 +24,7 @@ export const ADD_BOOK = gql`
   mutation createBook(
     $title: String!
     $author: String!
-    $published: String!
+    $published: Int!
     $genres: [String]!
   ) {
     addBook(

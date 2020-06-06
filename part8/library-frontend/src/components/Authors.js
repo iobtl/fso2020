@@ -56,7 +56,7 @@ const Authors = ({ authors, show }) => {
         <h3>set birthyear</h3>
         <form onSubmit={submit}>
           <Select
-            value={authorOptions.find((option) => option.value === name)}
+            value={authorOptions.find((option) => option.label === name)}
             defaultValue={authorOptions[0]}
             options={authorOptions}
             onChange={handleChange}

@@ -83,8 +83,9 @@ const typeDefs = gql`
   type Book {
     title: String!
     author: String!
-    published: String!
-    genres: [String!]
+    published: Int!
+    genres: [String!]!
+    id: ID!
   }
 
   type Author {
@@ -104,7 +105,7 @@ const typeDefs = gql`
     addBook(
       title: String!
       author: String!
-      published: String!
+      published: Int!
       genres: [String]!
     ): Book
 
@@ -134,6 +135,7 @@ const resolvers = {
   },
   Mutation: {
     addBook: (root, args) => {
+      console.log(args);
       const newBook = {
         ...args,
         id: uuid(),
