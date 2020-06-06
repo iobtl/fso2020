@@ -148,7 +148,6 @@ const resolvers = {
     },
     editAuthor: (root, args) => {
       const authorNames = authors.map((author) => author.name);
-      console.log(authorNames);
       const author = authorNames.includes(args.name)
         ? authors.find((author) => author.name === args.name)
         : null;
