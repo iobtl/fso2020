@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { EDIT_AUTHOR, ALL_AUTHORS } from '../queries';
 import { useMutation } from '@apollo/client';
+import Select from 'react-select';
 
 const Authors = ({ authors, show }) => {
   const [name, setName] = useState('');
@@ -14,6 +15,10 @@ const Authors = ({ authors, show }) => {
     return null;
   }
 
+  const authorOptions = authors.map(
+    (author) => new Object({ value: author.name, label: author.name })
+  );
+
   const submit = async (event) => {
     event.preventDefault();
 
@@ -22,6 +27,10 @@ const Authors = ({ authors, show }) => {
 
     setName('');
     setBorn('');
+  };
+
+  const handleChange = (e) => {
+    setName(e.value);
   };
 
   return (
@@ -46,13 +55,13 @@ const Authors = ({ authors, show }) => {
       <div>
         <h3>set birthyear</h3>
         <form onSubmit={submit}>
-          <div>
-            name{' '}
-            <input
-              value={name}
-              onChange={({ target }) => setName(target.value)}
-            />
-          </div>
+          <Select
+            value={authorOptions.find((option) => option.value === name)}
+            defaultValue={authorOptions[0]}
+            options={authorOptions}
+            onChange={handleChange}
+            placeholder='Select an existing author'
+          />
           <div>
             born
             <input
