@@ -120,7 +120,8 @@ const resolvers = {
   },
   Author: {
     bookCount: async (root) => {
-      const books = await Book.find({});
+      console.log(root);
+      const books = await Book.find({ author: root.id });
       return books.length;
     },
   },
@@ -146,20 +147,17 @@ const resolvers = {
       return newBook.populate('author').execPopulate();
     },
     editAuthor: async (root, args) => {
-      const author = Author.findOne({ name: args.name });
+      const author = await Author.findOneAndUpdate(
+        { name: args.name },
+        { born: args.setBornTo },
+        { new: true }
+      );
 
-      if (author === null) {
+      if (!author) {
         return null;
       }
 
-      const updatedAuthor = {
-        ...author,
-        born: args.setBornTo,
-      };
-
-      await updatedAuthor.save();
-
-      return updatedAuthor;
+      return author;
     },
   },
 };
