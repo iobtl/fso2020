@@ -4,7 +4,6 @@ const {
   AuthenticationError,
   gql,
 } = require('apollo-server');
-const { v1: uuid } = require('uuid');
 const Book = require('./models/Book');
 const Author = require('./models/Author');
 const User = require('./models/User');
@@ -55,7 +54,7 @@ const typeDefs = gql`
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]
     allAuthors: [Author!]
-    me: User
+    me: User!
   }
 
   type Mutation {

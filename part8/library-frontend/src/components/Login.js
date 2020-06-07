@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useMutation } from '@apollo/client';
-import { LOGIN } from '../queries';
+import React, { useState } from 'react';
 
-const Login = ({ show, setToken, redirect }) => {
+const Login = ({ login, show, setToken, redirect }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [login] = useMutation(LOGIN);
 
   if (!show) {
     return null;
@@ -14,9 +11,11 @@ const Login = ({ show, setToken, redirect }) => {
   const loginUser = async (event) => {
     event.preventDefault();
 
-    const token = login({ variables: { username, password } });
-    setToken(token.value);
+    login({ variables: { username, password } });
     redirect('authors');
+
+    setUsername('');
+    setPassword('');
   };
 
   return (
