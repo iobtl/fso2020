@@ -1,4 +1,9 @@
-const { ApolloServer, gql } = require('apollo-server');
+const {
+  ApolloServer,
+  UserInputError,
+  AuthenticationError,
+  gql,
+} = require('apollo-server');
 const { v1: uuid } = require('uuid');
 const Book = require('./models/Book');
 const Author = require('./models/Author');
@@ -96,8 +101,12 @@ const resolvers = {
     },
   },
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, { currentUser }) => {
       let author = await Author.findOne({ name: args.author });
+      if (!currentUser) {
+        throw new AuthenticationError('user not logged in');
+      }
+
       if (!author) {
         author = new Author({
           name: args.author,
@@ -128,7 +137,11 @@ const resolvers = {
 
       return newBook;
     },
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('user not logged in');
+      }
+
       try {
         const author = await Author.findOneAndUpdate(
           { name: args.name },
@@ -147,11 +160,15 @@ const resolvers = {
         });
       }
     },
-    createUser: async (root, args) => {
+    createUser: async (root, args, { currentUser }) => {
       const user = new User({
         username: args.username,
         favouriteGenre: args.favouriteGenre,
       });
+
+      if (!currentUser) {
+        throw new AuthenticationError('user not logged in');
+      }
 
       try {
         await user.save();
@@ -165,6 +182,7 @@ const resolvers = {
     },
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username });
+      console.log(user);
 
       if (!user || args.password !== 'secred') {
         throw new UserInputError('invalid username or password');
