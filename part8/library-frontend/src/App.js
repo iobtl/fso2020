@@ -22,11 +22,6 @@ const App = () => {
 
   const authorResult = useQuery(ALL_AUTHORS);
   const bookResult = useQuery(ALL_BOOKS);
-  /*
-  const userResult = useQuery(CURRENT_USER, {
-    pollInterval: 500,
-  });
-  */
 
   const [getUser, userResult] = useLazyQuery(CURRENT_USER);
 
@@ -34,6 +29,7 @@ const App = () => {
 
   useEffect(() => {
     if (result.data) {
+      // If successful login query is made
       const token = result.data.login.value;
       setToken(token);
       getUser();
@@ -43,12 +39,14 @@ const App = () => {
 
   useEffect(() => {
     if (results.data) {
+      // Obtaining favouriteGenre from currentUser post-login
       setRecommended(results.data.allBooks);
     }
   }, [results.data]);
 
   useEffect(() => {
     if (userResult.data) {
+      // Setting state to the currentUser
       setUser(userResult.data.me);
     }
   }, [userResult.data]);
