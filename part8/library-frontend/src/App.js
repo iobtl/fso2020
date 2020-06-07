@@ -30,7 +30,7 @@ const App = () => {
 
   const logout = () => {
     setToken(null);
-    localStorage().clear();
+    localStorage.clear();
     client.clearStore();
   };
 
@@ -58,7 +58,7 @@ const App = () => {
 
       <NewBook show={page === 'add'} />
 
-      <Login show={page === 'login'} setToken={setToken} />
+      <Login show={page === 'login'} setToken={setToken} redirect={setPage} />
     </div>
   );
 };
