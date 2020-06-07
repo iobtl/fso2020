@@ -15,13 +15,20 @@ import { ALL_AUTHORS, ALL_BOOKS, LOGIN, CURRENT_USER } from './queries';
 const App = () => {
   const [page, setPage] = useState('authors');
   const [token, setToken] = useState(null);
+  const [recommended, setRecommended] = useState([]);
   const [user, setUser] = useState(null);
+
+  const [getRecommended, results] = useLazyQuery(ALL_BOOKS);
 
   const authorResult = useQuery(ALL_AUTHORS);
   const bookResult = useQuery(ALL_BOOKS);
+  /*
   const userResult = useQuery(CURRENT_USER, {
     pollInterval: 500,
   });
+  */
+
+  const [getUser, userResult] = useLazyQuery(CURRENT_USER);
 
   const [login, result] = useMutation(LOGIN);
 
@@ -29,20 +36,40 @@ const App = () => {
     if (result.data) {
       const token = result.data.login.value;
       setToken(token);
+      getUser();
       localStorage.setItem('currentBlogUser', token);
     }
   }, [result.data]);
 
+  useEffect(() => {
+    if (results.data) {
+      setRecommended(results.data.allBooks);
+    }
+  }, [results.data]);
+
+  useEffect(() => {
+    if (userResult.data) {
+      setUser(userResult.data.me);
+    }
+  }, [userResult.data]);
+
   const client = useApolloClient();
+
+  const getUserRecommended = () => {
+    getRecommended({ variables: { genre: 'refactoring' } });
+  };
 
   if (authorResult.loading || bookResult.loading) {
     return <div>loading...</div>;
   }
 
   const logout = () => {
+    console.log('logging out');
     setToken(null);
+    setUser(null);
     localStorage.clear();
     client.clearStore();
+    setPage('authors');
   };
 
   const authors = authorResult.data.allAuthors;
@@ -58,7 +85,14 @@ const App = () => {
         ) : (
           <inline>
             <button onClick={() => setPage('add')}>add book</button>
-            <button onClick={() => setPage('recommended')}>recommend</button>
+            <button
+              onClick={() => {
+                setPage('recommended');
+                getUserRecommended();
+              }}
+            >
+              recommend
+            </button>
             <button onClick={logout}>logout</button>
           </inline>
         )}
@@ -67,9 +101,9 @@ const App = () => {
       <Books books={books} show={page === 'books'} />
       <NewBook show={page === 'add'} />
       <Recommended
-        books={books}
+        user={user}
+        books={recommended}
         show={page === 'recommended'}
-        user={userResult.data.me}
       />
 
       <Login
