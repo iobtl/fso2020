@@ -160,6 +160,8 @@ const resolvers = {
           invalidArgs: args,
         });
       }
+
+      return user;
     },
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username });
@@ -185,10 +187,10 @@ const server = new ApolloServer({
     const auth = req ? req.headers.authorization : null;
     if (auth && auth.toLowerCase().startsWith('bearer ')) {
       const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET);
-    }
+      const currentUser = await User.findById(decodedToken.id);
 
-    const currentUser = await User.findById(decodedToken.id);
-    return { currentUser };
+      return { currentUser };
+    }
   },
 });
 
