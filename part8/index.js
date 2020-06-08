@@ -73,11 +73,11 @@ const typeDefs = gql`
   }
 
   type Subscription {
-    bookAdded: Book
+    bookAdded: Book!
   }
 `;
 
-const pubsub = PubSub();
+const pubsub = new PubSub();
 
 const resolvers = {
   Query: {
@@ -202,10 +202,10 @@ const resolvers = {
 
       return { value: jwt.sign(userForToken, JWT_SECRET) };
     },
-    Subscription: {
-      bookAdded: {
-        subscribe: () => pubsub.asyncIterator(['BOOK_ADDED']),
-      },
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED']),
     },
   },
 };
@@ -226,5 +226,5 @@ const server = new ApolloServer({
 
 server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`);
-  console.log(`Subscriptiosn ready at ${subscriptionsUrl}`);
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`);
 });

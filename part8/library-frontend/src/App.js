@@ -9,8 +9,15 @@ import {
   useApolloClient,
   useMutation,
   useLazyQuery,
+  useSubscription,
 } from '@apollo/client';
-import { ALL_AUTHORS, ALL_BOOKS, LOGIN, CURRENT_USER } from './queries';
+import {
+  ALL_AUTHORS,
+  ALL_BOOKS,
+  LOGIN,
+  CURRENT_USER,
+  BOOK_ADDED,
+} from './queries';
 
 const App = () => {
   const [page, setPage] = useState('authors');
@@ -57,12 +64,19 @@ const App = () => {
     getRecommended({ variables: { genre: 'refactoring' } });
   };
 
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      window.alert(
+        `A new book ${subscriptionData.data.bookAdded.title} by ${subscriptionData.data.bookAdded.author.name} has been added`
+      );
+    },
+  });
+
   if (authorResult.loading || bookResult.loading) {
     return <div>loading...</div>;
   }
 
   const logout = () => {
-    console.log('logging out');
     setToken(null);
     setUser(null);
     localStorage.clear();
