@@ -6,11 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const app = express_1.default();
 app.use(express_1.default.json());
-const PORT = 3000;
+const PORT = 3003;
 app.get('/ping', (_request, response) => {
     console.log('someone pinged here');
     response.send('pong');
 });
 app.listen(PORT, () => {
-    `Server running on port ${PORT}`;
+    console.log(`Server running on port ${PORT}`);
 });
