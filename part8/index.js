@@ -95,6 +95,20 @@ const resolvers = {
         books = books.filter((book) => book.genres.includes(args.genre));
       }
 
+      /* Alternative: 
+      const query = {}
+      if (args.author) {
+        const author = await Author.findOne({name: args.author})
+        query.author = author.id
+      }
+
+      if (args.genre) {
+        query.genres = {$in: [args.genre]}
+      }
+
+      return Book.find(query).populate('author')
+      */
+
       return books;
     },
     allAuthors: () => Author.find({}),
