@@ -7,12 +7,9 @@ app.get('/hello', (_request, response) => {
 });
 
 app.get('/bmi', (request, response) => {
-  if (
-    !isNaN(Number(request.query.height)) &&
-    !isNaN(Number(request.query.weight))
-  ) {
-    const height = Number(request.query.height);
-    const weight = Number(request.query.weight);
+  const height = Number(request.query.height);
+  const weight = Number(request.query.weight);
+  if (!isNaN(height) && !isNaN(weight)) {
     response.json({
       weight,
       height,
