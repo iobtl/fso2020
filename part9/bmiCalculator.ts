@@ -1,8 +1,3 @@
-interface MultiplyValues {
-  height: number;
-  weight: number;
-}
-
 const parseArguments = (args: Array<string>) => {
   if (args.length < 4) throw new Error('Not enough arguments');
   if (args.length > 4) throw new Error('too many arguments');
@@ -17,7 +12,7 @@ const parseArguments = (args: Array<string>) => {
   }
 };
 
-const calculateBmi = (height: number, weight: number): String => {
+export const calculateBmi = (height: number, weight: number): String => {
   const bmi = weight / (height / 100) ** 2;
   console.log(bmi);
   if (bmi < 15) {
@@ -39,5 +34,4 @@ const calculateBmi = (height: number, weight: number): String => {
   }
 };
 
-const { height, weight } = parseArguments(process.argv);
-console.log(calculateBmi(height, weight));
+export default calculateBmi;
