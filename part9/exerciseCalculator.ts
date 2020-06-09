@@ -72,6 +72,4 @@ const getRatingDescription = (rating: number): String => {
   }
 };
 
-const { target, dailyExercise } = processArguments(process.argv);
-
-console.log(calculateExercises(dailyExercise, target));
+export default calculateExercises;
