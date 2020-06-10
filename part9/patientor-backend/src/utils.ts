@@ -1,6 +1,5 @@
 import { NewPatient, Gender } from './types';
 const toNewPatient = (object: any): NewPatient => {
-  console.log(object);
   const newPatient: NewPatient = {
     name: parseStringParam(object.name),
     dateOfBirth: parseDateOfBirth(object.dateOfBirth),
