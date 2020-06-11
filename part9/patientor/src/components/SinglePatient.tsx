@@ -5,15 +5,14 @@ import axios from 'axios';
 import { apiBaseUrl } from '../constants';
 
 const SinglePatient: React.FC = () => {
-  const [patient, setPatient] = useState<Patient>()
+  const [patient, setPatient] = useState<Patient>();
   const { id } = useParams<{ id: string }>();
-  console.log(id)
-  axios.get(`${apiBaseUrl}/patients/${id}`).then(returnedPatient => {
-    setPatient(returnedPatient.data)
-  })
+  axios.get(`${apiBaseUrl}/patients/${id}`).then((returnedPatient) => {
+    setPatient(returnedPatient.data[0]);
+  });
 
   if (!patient) {
-    return <div>loading...</div>
+    return <div>loading...</div>;
   }
 
   return (
