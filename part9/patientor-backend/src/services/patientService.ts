@@ -2,7 +2,7 @@ import { Patient, SensitivePatient, NewPatient } from '../types';
 import patientData from '../../data/patients';
 
 const getAll = (): Patient[] => {
-  return patientData.map((patient) => ({ ...patient, entries: [] }));
+  return patientData.map((patient) => ({ ...patient }));
 };
 
 const getAllSensitive = (): SensitivePatient[] => {
