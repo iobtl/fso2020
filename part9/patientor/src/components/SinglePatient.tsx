@@ -4,13 +4,17 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { apiBaseUrl } from '../constants';
 
-type SinglePatientProps = {
-  patients: { [id: string]: Patient };
-};
-
-const SinglePatient: React.FC<SinglePatientProps> = ({ patients }) => {
+const SinglePatient: React.FC = () => {
+  const [patient, setPatient] = useState<Patient>()
   const { id } = useParams<{ id: string }>();
-  const patient = patients[id];
+  console.log(id)
+  axios.get(`${apiBaseUrl}/patients/${id}`).then(returnedPatient => {
+    setPatient(returnedPatient.data)
+  })
+
+  if (!patient) {
+    return <div>loading...</div>
+  }
 
   return (
     <div>
