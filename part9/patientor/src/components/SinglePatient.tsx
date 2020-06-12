@@ -1,12 +1,56 @@
 import React, { useState, useEffect } from 'react';
-import { Patient } from '../types';
+import { Patient, Entry } from '../types';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { apiBaseUrl } from '../constants';
 import { Diagnosis } from '../types';
+import { Icon } from 'semantic-ui-react';
+import { assertNever } from '../types';
 
-const DiagnosisPart: React.FC<{ diagnosis: string }> = ({ diagnosis }) => {
-  return <li>{diagnosis}</li>;
+const EntryListing: React.FC<{ entry: Entry }> = ({ entry }) => {
+  switch (entry.type) {
+    case 'Hospital':
+      return <HospitalEntry entry={entry} />;
+    case 'OccupationalHealthcare':
+      return <OccupationalHealthcareEntry entry={entry} />;
+    case 'HealthCheck':
+      return <HealthCheckEntry entry={entry} />;
+    default:
+      return assertNever(entry);
+  }
+};
+
+const HospitalEntry: React.FC<{ entry: Entry }> = ({ entry }) => {
+  return (
+    <div>
+      <p>
+        <strong>{entry.date}</strong> <Icon name='doctor' size='large' />
+      </p>
+      <p>{entry.description}</p>
+    </div>
+  );
+};
+
+const OccupationalHealthcareEntry: React.FC<{ entry: Entry }> = ({ entry }) => {
+  return (
+    <div>
+      <p>
+        <strong>{entry.date}</strong> <Icon name='doctor' size='large' />
+      </p>
+      <p>{entry.description}</p>
+    </div>
+  );
+};
+
+const HealthCheckEntry: React.FC<{ entry: Entry }> = ({ entry }) => {
+  return (
+    <div>
+      <p>
+        <strong>{entry.date}</strong> <Icon name='heart' size='large' />
+      </p>
+      <p>{entry.description}</p>
+    </div>
+  );
 };
 
 const SinglePatient: React.FC = () => {
@@ -56,6 +100,7 @@ const SinglePatient: React.FC = () => {
                 diagnosis.map((codeDescription) => <li>{codeDescription}</li>)}
             </ul>
           ) : null}
+          <EntryListing entry={entry} />
         </div>
       ))}
     </div>

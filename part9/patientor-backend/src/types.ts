@@ -24,7 +24,7 @@ export type NewPatient = Omit<Patient, 'id'>;
 
 export type SensitivePatient = Omit<Patient, 'ssn'>;
 
-interface BaseEntry {
+export interface BaseEntry {
   id: string;
   description: string;
   date: string;
@@ -59,3 +59,27 @@ export type Entry =
   | HospitalEntry
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
+
+export type NewHealthCheckEntry = Omit<HealthCheckEntry, 'id'>;
+export type NewHospitalEntry = Omit<HospitalEntry, 'id'>;
+export type NewOccupationalHealthcareEntry = Omit<
+  OccupationalHealthcareEntry,
+  'id'
+>;
+
+export type NewEntry =
+  | NewHealthCheckEntry
+  | NewHospitalEntry
+  | NewOccupationalHealthcareEntry;
+
+export enum EntryType {
+  HospitalEntry = 'Hospital',
+  OccupationalHealthcareEntry = 'OccupationalHealthcare',
+  HealthCheckEntry = 'HealthCheck',
+}
+
+export const assertNever = (value: any): never => {
+  throw new Error(
+    `Unhandled discriminated union member: ${JSON.stringify(value)}`
+  );
+};

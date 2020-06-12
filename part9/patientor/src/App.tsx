@@ -11,6 +11,8 @@ import { setPatientList } from './state/reducer';
 import PatientListPage from './PatientListPage';
 import SinglePatient from './components/SinglePatient';
 
+import 'semantic-ui-css/semantic.min.css';
+
 const App: React.FC = () => {
   const [{ patients }, dispatch] = useStateValue();
   React.useEffect(() => {
